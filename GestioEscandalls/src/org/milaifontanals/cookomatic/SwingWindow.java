@@ -55,7 +55,7 @@ import org.milaifontanals.persistence.EPCookomatic;
  */
 public class SwingWindow {
     private JFrame f;
-    private JPanel panellEsq, panellDta;
+    private JPanel panellEsq;
     
 //    private DefaultListModel modelLlista;
     private MutableComboBoxModel<String> cboModel;
@@ -74,7 +74,6 @@ public class SwingWindow {
     private TextArea esc_txtDescripcio;
     
     
-    
     // Capa de persistència
     private EPCookomatic cp;
     private String nomFitxerPropietats;
@@ -82,10 +81,9 @@ public class SwingWindow {
     private List<Plat> llistaPlats = new ArrayList<>();
     private List<LiniaEscandall> llistaEscandall = new ArrayList<>();
 
-
-    
-    
+  
     // Taula plats
+    private JScrollPane scrollTaula;
     private JTable taulaPlats;
     private String[] titolsColumnes = new String[] {"NOM","PREU"};
     private DefaultTableModel modelPlats = new DefaultTableModel();
@@ -103,20 +101,25 @@ public class SwingWindow {
         f = new JFrame(titol);
         
         cp = new EPCookomatic(nomFitxerPropietats);
-        
+
         afegirElements();
-        afegirTaula();
+//        iniTaula();
         prepararSubfinestra();
         f.setVisible(true);
         f.pack();
+        f.setSize(700, 400);
         f.setResizable(false); // no permetre modificar la mida de la finestra
         f.setLocation(10, 300); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
         // +x, més a la dreta
         // +y, més avall
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        
-
+    }
+    
+    private void iniCboModel(){
+//        cboModel.addElement("-------------");
+        cboModel = new DefaultComboBoxModel(llistaCategories.toArray());
+//        cboModel.insertElementAt("------------", 0);
+        cboModel.addElement("-------------");
     }
 
     private void afegirElements() {
@@ -130,14 +133,20 @@ public class SwingWindow {
         llistaCategories = cp.getCategories();
         llistaPlats = cp.getPlats();
         
-        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
+        iniCboModel();
         
-        panellEsq.add(cboCategories);
+//        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
+        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
+        JPanel panellCategories = new JPanel();
+        panellCategories.add(cboCategories);
+        panellEsq.add(panellCategories);
         
         // RadioButtons: si, no, totes
         rdoDispSi = new JRadioButton("Sí");
         rdoDispNo = new JRadioButton("No");
         rdoDispTotes = new JRadioButton("Totes");
+        rdoDispTotes.setSelected(true);
+//        rdoDispTotes.setEnabled(true);
         grupRadios = new ButtonGroup();
         
         grupRadios.add(rdoDispSi);
@@ -172,16 +181,14 @@ public class SwingWindow {
         
         
         
-        panellDta = new JPanel();
-        
-        modelPlats.setColumnIdentifiers(titolsColumnes);
-        taulaPlats = new JTable(modelPlats);
+//        panellDta = new JPanel();
 
-        panellDta.add(taulaPlats);
+        iniTaula();
+//        panellDta.add(taulaPlats);
 
         
-        f.add(panellEsq, BorderLayout.WEST);
-        f.add(panellDta, BorderLayout.CENTER);
+        f.add(panellEsq, BorderLayout.NORTH);
+//        f.add(panellDta, BorderLayout.CENTER);
     }
 
     
@@ -253,9 +260,19 @@ public class SwingWindow {
     }
     
     
-    
-    private void afegirTaula() {
+    private void iniModelPlats() {
         modelPlats = new DefaultTableModel();
+        modelPlats.setColumnIdentifiers(titolsColumnes);
+        for (int i = 0; i < titolsColumnes.length; i++) {
+            modelPlats.addColumn(titolsColumnes[i]);
+        }
+    }
+    
+    private void iniTaula() {
+//        taulaPlats = new JTable(modelPlats);
+        iniModelPlats();
+        omplirModel();
+        
         taulaPlats = new JTable(modelPlats) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -275,33 +292,60 @@ public class SwingWindow {
                         clazz = Integer.class;
                         break;
                 }
-
                 return clazz;
             }
-
         }; // definició / construcció de la taula
         // afegir la fila amb els titols
-        for (int i = 0; i < titolsColumnes.length; i++) {
-            modelPlats.addColumn(titolsColumnes[i]);
-        }
-        omplirTaula();
+//        omplirTaula();
 
-//        taulaPlats.getColumnModel().getColumn(0).setPreferredWidth(200);
-//        taulaPlats.getColumnModel().getColumn(1).setPreferredWidth(100);
-//        taulaPlats.getColumnModel().getColumn(2).setPreferredWidth(50);
 
-//        taula.getSelectionModel().addListSelectionListener(new GestioFiles());
-        
-        JScrollPane scroll = new JScrollPane(taulaPlats, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setPreferredSize(new Dimension(400, 200));
-        
-//        Border marc = BorderFactory.createLineBorder(f.getBackground(),10);
-        Border marc = BorderFactory.createLineBorder(Color.GREEN,10);
-        scroll.setBorder(marc);
+        iniScrollTaula();
         // afegir JTable dins el JFrame
-        f.add(scroll, BorderLayout.SOUTH);
+        f.add(scrollTaula, BorderLayout.CENTER);
     }
-
+    
+    private void iniScrollTaula(){
+        scrollTaula = new JScrollPane(taulaPlats, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollTaula.setPreferredSize(new Dimension(400, 200));
+        
+        Border marc = BorderFactory.createLineBorder(Color.DARK_GRAY,5);
+        scrollTaula.setBorder(marc);        
+    }
+    
+    
+    //---------------------------------------------------------------------------------------------------------------------------------------------
+    // MODEL DE TAULA PLATS
+    private void omplirModel(){
+        for (Plat plat : llistaPlats){
+            Object[] obj = new Object[2];
+            
+            obj[0] = plat.getNom();
+            obj[1] = plat.getPreu();
+            
+            modelPlats.addRow(obj);
+        }
+    }
+    
+    private void buidarModel(){
+//        for (int i = 0; i < modelPlats.getRowCount(); i++) {
+//            modelPlats.removeRow(i);
+//        }
+        modelPlats.setRowCount(0);
+    }
+    
+    private void actualitzarModel(){
+        buidarModel();
+        omplirModel();
+    }
+    
+    private void buidarTaula(){
+        System.out.println("buidant taula");
+        
+        buidarModel();
+//        modelPlats.fireTableDataChanged();
+    }
+    
+    
     private void afegirTaulaEscandall() {
         modelEscandall = new DefaultTableModel();
         taulaEscandall = new JTable(modelEscandall) {
@@ -350,12 +394,15 @@ public class SwingWindow {
         esc_panellInf.add(scroll, BorderLayout.SOUTH);
     }
 
-    private void omplirTaula() {
-        // TODO: ini titols columnes amb dades reals de la BD
-        String bdInfo[][] = obtenirMatriu();
-        
-        taulaPlats = new JTable(bdInfo, titolsColumnes);
-    }
+    
+//    private void omplirTaula() {
+//        // TODO: ini titols columnes amb dades reals de la BD
+//        String bdInfo[][] = obtenirMatriu();
+//        
+//        taulaPlats = new JTable(bdInfo, titolsColumnes);
+//    }
+    
+    
     private void omplirTaulaEscandall() {
         // TODO: ini titols columnes amb dades reals de la BD
         String bdInfo[][] = obtenirMatriuEscandall();
@@ -364,18 +411,6 @@ public class SwingWindow {
     }
 
     
-    private String[][] obtenirMatriu() {
-        String matriuInfo[][] = new String[llistaPlats.size()][titolsColumnes.length];
-        
-        for (int i = 0; i < llistaPlats.size(); i++) {
-            Plat p = llistaPlats.get(i);
-            
-            matriuInfo[i][0] = p.getNom();
-            matriuInfo[i][1] = p.getPreu()+"";
-        }
-        return matriuInfo;
-    }    
-
     private String[][] obtenirMatriuEscandall() {
         String matriuInfo[][] = new String[llistaEscandall.size()][titolsEscandall.length];
         
@@ -390,24 +425,45 @@ public class SwingWindow {
         return matriuInfo;
     }    
 
-    public void clearTable()
-    {
-//        DefaultTableModel dm = (DefaultTableModel) table.getModel();
-        int rowCount = modelPlats.getRowCount();
-        //Remove rows one by one from the end of the table
-        for (int i = rowCount - 1; i >= 0; i--) {
-            modelPlats.removeRow(i);
+
+
+    private class FiltreCerca implements ActionListener {
+
+        public FiltreCerca() {
         }
-    }    
-    
-    
-    public void buidarTaula()
-    {
-        for (int i = 0; i < modelPlats.getRowCount(); i++) {
-            modelPlats.removeRow(i);
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Categoria catSeleccionada = null;
+
+            // si han seleccionat una categoria
+            if (cboCategories.getSelectedIndex()!=0){
+                catSeleccionada = (Categoria)cboCategories.getSelectedItem();
+            }
+
+            Boolean disponible = null;
+            if (rdoDispSi.isSelected())
+                disponible = true;
+            else if (rdoDispNo.isSelected())
+                disponible = false;
+
+            llistaPlats = cp.getPlatsFiltrats(catSeleccionada, disponible);
+            actualitzarModel();
+//            buidarTaula();
+//            if (catSeleccionada!=null){
+//                llistaPlats = cp.getPlatsFiltrats(catSeleccionada);
+//                clearTable();
+////                omplirTaula();
+////                ((AbstractTableModel) taulaPlats.getModel()).fireTableDataChanged(); // Repaint one cell.
+//            } else {
+//                boolean disponible = rdoDispSi.isSelected()? true : false;
+//                
+//                llistaPlats = cp.getPlatsPerDisponibilitat(true);
+//            }
         }
-        
     }
+
+
 
     private class GestioEscandall implements ActionListener {
 
@@ -421,26 +477,4 @@ public class SwingWindow {
     }
     
     
-    private class FiltreCerca implements ActionListener {
-
-        public FiltreCerca() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Categoria catSeleccionada = (Categoria)cboCategories.getSelectedItem();
-
-            buidarTaula();
-//            if (catSeleccionada!=null){
-//                llistaPlats = cp.getPlatsPerCategoria(catSeleccionada);
-//                clearTable();
-////                omplirTaula();
-////                ((AbstractTableModel) taulaPlats.getModel()).fireTableDataChanged(); // Repaint one cell.
-//            } else {
-//                boolean disponible = rdoDispSi.isSelected()? true : false;
-//                
-//                llistaPlats = cp.getPlatsPerDisponibilitat(true);
-//            }
-        }
-    }
 }

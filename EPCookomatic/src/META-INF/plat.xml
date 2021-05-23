@@ -17,6 +17,10 @@
             <query>select p from Plat p where p.disponible = :disponible</query>
         </named-query>
 
+        <named-query name="PlatsFiltratsCategoriaDisponibilitat">
+            <query>select p from Plat p where p.categoria = :categoria and p.disponible = :disponible</query>
+        </named-query>
+
         <attributes>
             <id name="codi">
                 <column name="CODI"/>

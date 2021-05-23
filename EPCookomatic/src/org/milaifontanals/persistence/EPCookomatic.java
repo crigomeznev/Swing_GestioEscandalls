@@ -127,10 +127,17 @@ public class EPCookomatic {
     }    
 
 
-    public List<Plat> getPlatsPerCategoria(Categoria c) {
+    public List<Plat> getPlatsFiltrats(Categoria c, Boolean disponible) {
         List<Plat> plats = new ArrayList<>();
+        Query q = null;
 
-        Query q = em.createNamedQuery("PlatsPerCategoria");
+        // Opció: Disponibilitat: TOTES
+        if (disponible==null){
+            q = em.createNamedQuery("PlatsPerCategoria");
+        } else {
+            q = em.createNamedQuery("PlatsFiltratsCategoriaDisponibilitat");
+            q.setParameter("disponible", disponible);
+        }
         q.setParameter("categoria", c);
         
         plats = (List<Plat>) q.getResultList();
