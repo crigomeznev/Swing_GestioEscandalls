@@ -25,7 +25,8 @@ public class SwingApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SwingWindow sw = new SwingWindow("Gestió d'Escandalls");
+        SwingWindow sw = new SwingWindow("Gestió d'Escandalls", "connexio.properties");
+//        SwingWindow_COPY sw = new SwingWindow_COPY("Gestió d'Escandalls", "connexio.properties");
 
     }
     

@@ -6,6 +6,14 @@
 package org.milaifontanals.cookomatic;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
@@ -22,12 +31,23 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import org.milaifontanals.cookomatic.model.cuina.Categoria;
+import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
+import org.milaifontanals.cookomatic.model.cuina.Plat;
+import org.milaifontanals.persistence.EPCookomatic;
 
 /**
  *
@@ -44,64 +64,75 @@ public class SwingWindow {
     private JRadioButton rdoDispSi, rdoDispNo, rdoDispTotes;
     private ButtonGroup grupRadios;
     
-    private JButton btnCerca;
+    private JButton btnCerca, btnEditEscandall;
     
+    
+    // Subfinestra d'escandalls
+    private JDialog subfEscandalls;
+    private JPanel esc_panellSup, esc_panellInf;
+    private JTextField esc_txtNom;
+    private TextArea esc_txtDescripcio;
+    
+    
+    
+    // Capa de persistència
+    private EPCookomatic cp;
+    private String nomFitxerPropietats;
+    private List<Categoria> llistaCategories = new ArrayList<>();
+    private List<Plat> llistaPlats = new ArrayList<>();
+    private List<LiniaEscandall> llistaEscandall = new ArrayList<>();
+
+
+    
+    
+    // Taula plats
     private JTable taulaPlats;
-    private String[] columnes = new String[] {"CODI","NOM","PREU","DISPONIBLE","CATEGORIA"};
-    private DefaultTableModel taulaModel = new DefaultTableModel();
-//    private DefaultTableModel model = new DefaultTableModel();
+    private String[] titolsColumnes = new String[] {"NOM","PREU"};
+    private DefaultTableModel modelPlats = new DefaultTableModel();
 
-
-/*
-Visualitzar la llista de plats, i poder filtrar per:
-    - Categoria (amb un desplegable),
-    de manera que si no hi ha categoria seleccionada visualitzi tots els plats.
-    Els plats cal visualitzar-los en el color assignat a la seva categoria.
     
-    - Disponibilitat, amb 3 botons de selecció (Si, No, Totes) 
-    
-    L’aplicació ha de facilitar un botó Cercar per a que l’usuari executi la cerca.
-    En posar en marxa l’aplicació, no hi haurà cap categoria seleccionada i botó
-    Disponibilitat estarà a Totes, però sense efectuar cap cerca fins que l’usuari
-    l’executa via botó Cercar.     
-    
-    */
+    // Taula escandall
+    private JTable taulaEscandall;
+    private String[] titolsEscandall = new String[] {"NUM","QUANTITAT","INGREDIENT","UNITAT"};
+    private DefaultTableModel modelEscandall = new DefaultTableModel();
 
-
-    public SwingWindow(String titol) {
-        f= new JFrame(titol);
+    
+    
+    
+    public SwingWindow(String titol, String nomFitxerPropietats) {
+        f = new JFrame(titol);
+        
+        cp = new EPCookomatic(nomFitxerPropietats);
+        
         afegirElements();
+        afegirTaula();
+        prepararSubfinestra();
         f.setVisible(true);
         f.pack();
         f.setResizable(false); // no permetre modificar la mida de la finestra
-        f.setLocation(10,300); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
+        f.setLocation(10, 300); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
         // +x, més a la dreta
         // +y, més avall
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);        
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
+
     }
 
     private void afegirElements() {
         panellEsq = new JPanel();
-        panellEsq.setLayout(new BoxLayout(panellEsq, BoxLayout.Y_AXIS));
-        panellDta = new JPanel();
+        panellEsq.setLayout(new BoxLayout(panellEsq, BoxLayout.X_AXIS));
         
         cboCategories = new JComboBox<String>();
         // TODO: carregar cboCategories amb dades BD
 
         // Ini cboModel
-        categories.add("categoria1");
-        categories.add("categoria2");
-        categories.add("categoria3");
-        categories.add("categoria4");
-        categories.add("categoria5");
-        cboModel = new DefaultComboBoxModel<>();
-        for (int i = 0; i < categories.size(); i++) {
-            cboModel.addElement(categories.get(i));
-        }
-        cboCategories = new JComboBox(cboModel);
+        llistaCategories = cp.getCategories();
+        llistaPlats = cp.getPlats();
+        
+        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
         
         panellEsq.add(cboCategories);
-        
         
         // RadioButtons: si, no, totes
         rdoDispSi = new JRadioButton("Sí");
@@ -113,106 +144,303 @@ Visualitzar la llista de plats, i poder filtrar per:
         grupRadios.add(rdoDispNo);
         grupRadios.add(rdoDispTotes);
 
-        panellEsq.add(rdoDispSi);
-        panellEsq.add(rdoDispNo);
-        panellEsq.add(rdoDispTotes);
+        Border brdChk = BorderFactory.createLineBorder(Color.GRAY, 1);
+        TitledBorder tbrdChk = new TitledBorder(brdChk, "Disponibilitat");
+        JPanel pnlChk = new JPanel();
+        pnlChk.add(rdoDispSi);
+        pnlChk.add(rdoDispNo);
+        pnlChk.add(rdoDispTotes);
+        pnlChk.setBorder(tbrdChk);
+
+        panellEsq.add(pnlChk);
+
+//        f.add(taulaPlats, BorderLayout.SOUTH);
         
+//        panellEsq.add(rdoDispSi);
+//        panellEsq.add(rdoDispNo);
+//        panellEsq.add(rdoDispTotes);
         
         btnCerca = new JButton("Cerca!");
-        btnCerca.addActionListener(null);
+        btnCerca.addActionListener(new FiltreCerca());
 
+        btnEditEscandall = new JButton("Editar escandall");
+        btnEditEscandall.addActionListener(new GestioEscandall());
+        
         panellEsq.add(btnCerca);
-        
-        f.add(panellEsq, BorderLayout.WEST);
-        
+        panellEsq.add(btnEditEscandall);
         
         
-        // panell central: llista de plats
         
-        taulaModel.setColumnIdentifiers(columnes);
-        taulaPlats = new JTable(taulaModel);
         
-        omplirTaula();
+        panellDta = new JPanel();
         
-//        taulaModel.addRow(new Object[]{"1","patates fregides","5","sí","pica-pica"});
-//        taulaModel.addRow(new Object[]{"1","patates fregides","5","sí","pica-pica"});
-//        taulaModel.addRow(new Object[]{"1","patates fregides","5","sí","pica-pica"});
-//        taulaModel.addRow(new Object[]{"1","patates fregides","5","sí","pica-pica"});
-//        taulaModel.addRow(new Object[]{"1","patates fregides","5","sí","pica-pica"});
-
+        modelPlats.setColumnIdentifiers(titolsColumnes);
+        taulaPlats = new JTable(modelPlats);
 
         panellDta.add(taulaPlats);
+
         
+        f.add(panellEsq, BorderLayout.WEST);
         f.add(panellDta, BorderLayout.CENTER);
     }
 
     
+    private void prepararSubfinestra() {
+        subfEscandalls = new JDialog(f, true);
+        subfEscandalls.setLayout(new BorderLayout());
+        // el true és per bloquejar l'accés a altres finestres mentre aquesta està activa
+
+//        subfinestra.setLayout(new BorderLayout() );
+        subfEscandalls.setTitle("Menú d'escandalls");
+        
+        esc_panellSup = new JPanel();
+        esc_panellInf = new JPanel();
+        
+//        lblMissatgeNoTrobada = new JLabel();
+//        txtNovaDesc = new JTextField(20);
+//        botoOk = new JButton("OK");
+//        botoOk.addActionListener(new GestioBoto());
+//        botoCancel = new JButton("Cancel");
+//        botoCancel.addActionListener(new GestioBoto());
+//        sbfPanellSup = new JPanel();
+//        sbfPanellSup.setLayout(new BoxLayout(sbfPanellSup, BoxLayout.Y_AXIS));
+//        sbfPanellMig = new JPanel();
+//        sbfPanellInf = new JPanel();
+//
+//        sbfPanellSup.add(lblMissatgeNoTrobada);
+//        sbfPanellSup.add(new JLabel("escriure la descripció per desar-la"));
+//        subfinestra.add(sbfPanellSup, BorderLayout.NORTH);
+////        subfinestra.add(lblMissatgeNoTrobada, BorderLayout.NORTH);
+//        sbfPanellMig.add(txtNovaDesc);
+//        subfinestra.add(sbfPanellMig, BorderLayout.CENTER);
+//        sbfPanellInf.add(botoOk);
+//        sbfPanellInf.add(botoCancel);
+//        subfinestra.add(sbfPanellInf, BorderLayout.SOUTH);
+        JLabel esc_lblNom = new JLabel("Plat:");
+        JLabel esc_lblDescripcio = new JLabel("Descripció:");
+
+        esc_txtDescripcio = new TextArea(50, 3);
+        esc_txtDescripcio.setEditable(false);
+        esc_txtNom = new JTextField(20);
+        esc_txtNom.setEditable(false);
+        
+        esc_panellSup.add(esc_lblNom);
+        esc_panellSup.add(esc_txtNom);
+        esc_panellSup.add(esc_lblDescripcio);
+        esc_panellSup.add(esc_txtDescripcio);
+        
+        
+        afegirTaulaEscandall();
+        
+//        modelEscandall.setColumnIdentifiers(titolsEscandall);
+//        taulaEscandall = new JTable(modelEscandall);
+//
+//        panellDta.add(taulaPlats);
+        
+        subfEscandalls.add(esc_panellSup, BorderLayout.NORTH);
+        subfEscandalls.add(esc_panellInf, BorderLayout.CENTER);
+        
+        subfEscandalls.pack();
+//        subfEscandalls.setSize(250, 150);
+        subfEscandalls.setSize(500, 300);
+        subfEscandalls.setResizable(false);
+        // centrar-lo al frame
+        subfEscandalls.setLocationRelativeTo(null);
+//        subfinestra.setLocationRelativeTo(f);
+        subfEscandalls.setVisible(false);
+//        subfinestra.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+    }
     
-    // NOMÉS DE PROVA, ELIMINAR!!!!
+    
+    
+    private void afegirTaula() {
+        modelPlats = new DefaultTableModel();
+        taulaPlats = new JTable(modelPlats) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+            // retorna el tipus que ha de gestionar la classe
+            @Override
+            public Class<?> getColumnClass(int column) {
+                Class clazz = String.class;
+                switch (column) {
+                    case 0:
+                    case 1:
+                        clazz = String.class;
+                        break;
+                    case 2:
+                        clazz = Integer.class;
+                        break;
+                }
+
+                return clazz;
+            }
+
+        }; // definició / construcció de la taula
+        // afegir la fila amb els titols
+        for (int i = 0; i < titolsColumnes.length; i++) {
+            modelPlats.addColumn(titolsColumnes[i]);
+        }
+        omplirTaula();
+
+//        taulaPlats.getColumnModel().getColumn(0).setPreferredWidth(200);
+//        taulaPlats.getColumnModel().getColumn(1).setPreferredWidth(100);
+//        taulaPlats.getColumnModel().getColumn(2).setPreferredWidth(50);
+
+//        taula.getSelectionModel().addListSelectionListener(new GestioFiles());
+        
+        JScrollPane scroll = new JScrollPane(taulaPlats, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setPreferredSize(new Dimension(400, 200));
+        
+//        Border marc = BorderFactory.createLineBorder(f.getBackground(),10);
+        Border marc = BorderFactory.createLineBorder(Color.GREEN,10);
+        scroll.setBorder(marc);
+        // afegir JTable dins el JFrame
+        f.add(scroll, BorderLayout.SOUTH);
+    }
+
+    private void afegirTaulaEscandall() {
+        modelEscandall = new DefaultTableModel();
+        taulaEscandall = new JTable(modelEscandall) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+            // retorna el tipus que ha de gestionar la classe
+            @Override
+            public Class<?> getColumnClass(int column) {
+                Class clazz = String.class;
+                switch (column) {
+                    case 0:
+                    case 1:
+                        clazz = String.class;
+                        break;
+                    case 2:
+                        clazz = Integer.class;
+                        break;
+                }
+
+                return clazz;
+            }
+
+        }; // definició / construcció de la taula
+        // afegir la fila amb els titols
+        for (int i = 0; i < titolsEscandall.length; i++) {
+            modelEscandall.addColumn(titolsEscandall[i]);
+        }
+        omplirTaulaEscandall();
+
+//        taulaPlats.getColumnModel().getColumn(0).setPreferredWidth(200);
+//        taulaPlats.getColumnModel().getColumn(1).setPreferredWidth(100);
+//        taulaPlats.getColumnModel().getColumn(2).setPreferredWidth(50);
+
+//        taula.getSelectionModel().addListSelectionListener(new GestioFiles());
+        
+        JScrollPane scroll = new JScrollPane(taulaEscandall, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setPreferredSize(new Dimension(400, 200));
+        
+//        Border marc = BorderFactory.createLineBorder(f.getBackground(),10);
+        Border marc = BorderFactory.createLineBorder(Color.GREEN,10);
+        scroll.setBorder(marc);
+        // afegir JTable dins el JFrame
+        esc_panellInf.add(scroll, BorderLayout.SOUTH);
+    }
+
     private void omplirTaula() {
-        String up = "UP-EclipseLink";
+        // TODO: ini titols columnes amb dades reals de la BD
+        String bdInfo[][] = obtenirMatriu();
+        
+        taulaPlats = new JTable(bdInfo, titolsColumnes);
+    }
+    private void omplirTaulaEscandall() {
+        // TODO: ini titols columnes amb dades reals de la BD
+        String bdInfo[][] = obtenirMatriuEscandall();
+        
+        taulaEscandall = new JTable(bdInfo, titolsEscandall);
+    }
 
-        Properties props = new Properties();
+    
+    private String[][] obtenirMatriu() {
+        String matriuInfo[][] = new String[llistaPlats.size()][titolsColumnes.length];
+        
+        for (int i = 0; i < llistaPlats.size(); i++) {
+            Plat p = llistaPlats.get(i);
+            
+            matriuInfo[i][0] = p.getNom();
+            matriuInfo[i][1] = p.getPreu()+"";
+        }
+        return matriuInfo;
+    }    
 
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            em = null;
-            emf = null;
+    private String[][] obtenirMatriuEscandall() {
+        String matriuInfo[][] = new String[llistaEscandall.size()][titolsEscandall.length];
+        
+        for (int i = 0; i < llistaEscandall.size(); i++) {
+            LiniaEscandall l = llistaEscandall.get(i);
+            
+            matriuInfo[i][0] = l.getNum()+"";
+            matriuInfo[i][1] = l.getQuantitat()+"";
+            matriuInfo[i][2] = l.getIngredient().getNom()+"";
+            matriuInfo[i][3] = l.getUnitat().getNom()+"";
+        }
+        return matriuInfo;
+    }    
 
-            props.load(new FileReader("connexio.properties"));
-
-            System.out.println("Intent amb " + up);
-            emf = Persistence.createEntityManagerFactory(up, props);
-            System.out.println("EntityManagerFactory creada");
-            em = emf.createEntityManager();
-            System.out.println();
-            System.out.println("EntityManager creat");
-
-            // "CODI","NOM","PREU","DISPONIBLE","CATEGORIA"
-            Query q = em.createNativeQuery("select codi,nom,PREU,DISPONIBLE,CATEGORIA from PLAT");
-
-            List<Object[]> l = q.getResultList();
-
-            for (Object[] o : l) {
-                long codi = (long)o[0];
-                String nom = (String)o[1];
-                BigDecimal preu = (BigDecimal)o[2];
-                boolean disponible = (boolean)o[3];
-                long categoria = (long)o[4];
-                
-                DefaultTableModel tblModel = (DefaultTableModel)taulaPlats.getModel();
-                
-                String s1 = String.valueOf(codi);
-                String s3 = String.valueOf(preu);
-                String s4 = String.valueOf(disponible);
-                String s5 = String.valueOf(categoria);
-                
-                
-                
-                tblModel.addRow(new String[]{s1, nom, s3, s4, s5});
-//                System.out.println("Ingredient "
-//                        + o[0]
-//                        + " "
-//                        + o[1]);
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Exception: " + ex.getMessage());
-            System.out.print(ex.getCause() != null ? "Caused by:" + ex.getCause().getMessage() + "\n" : "");
-            System.out.println("Traça:");
-            ex.printStackTrace();
-        } finally {
-            if (em != null) {
-                em.close();
-                System.out.println("EntityManager tancat");
-            }
-            if (emf != null) {
-                emf.close();
-                System.out.println("EntityManagerFactory tancada");
-            }
+    public void clearTable()
+    {
+//        DefaultTableModel dm = (DefaultTableModel) table.getModel();
+        int rowCount = modelPlats.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            modelPlats.removeRow(i);
+        }
+    }    
+    
+    
+    public void buidarTaula()
+    {
+        for (int i = 0; i < modelPlats.getRowCount(); i++) {
+            modelPlats.removeRow(i);
         }
         
     }
+
+    private class GestioEscandall implements ActionListener {
+
+        public GestioEscandall() {
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            subfEscandalls.setVisible(true);
+        }
+    }
     
+    
+    private class FiltreCerca implements ActionListener {
+
+        public FiltreCerca() {
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Categoria catSeleccionada = (Categoria)cboCategories.getSelectedItem();
+
+            buidarTaula();
+//            if (catSeleccionada!=null){
+//                llistaPlats = cp.getPlatsPerCategoria(catSeleccionada);
+//                clearTable();
+////                omplirTaula();
+////                ((AbstractTableModel) taulaPlats.getModel()).fireTableDataChanged(); // Repaint one cell.
+//            } else {
+//                boolean disponible = rdoDispSi.isSelected()? true : false;
+//                
+//                llistaPlats = cp.getPlatsPerDisponibilitat(true);
+//            }
+        }
+    }
 }
