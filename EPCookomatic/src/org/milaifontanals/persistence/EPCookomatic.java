@@ -33,8 +33,8 @@ public class EPCookomatic {
      * Constructor que estableix connexió amb el servidor a partir de les dades
      * informades en fitxer de propietats de nom EPCookomatic.properties.
      *
-     * @throws EPCookomaticException si hi ha algun problema en el fitxer de propietats
-     * o en establir la connexió
+     * @throws EPCookomaticException si hi ha algun problema en el fitxer de
+     * propietats o en establir la connexió
      */
     public EPCookomatic() {
         this("EPCookomatic.properties");
@@ -46,8 +46,8 @@ public class EPCookomatic {
      * fitxer de nom EPCookomatic.properties.
      *
      * @param nomFitxerPropietats
-     * @throws EPCookomaticException si hi ha algun problema en el fitxer de propietats
-     * o en establir la connexió
+     * @throws EPCookomaticException si hi ha algun problema en el fitxer de
+     * propietats o en establir la connexió
      */
     public EPCookomatic(String nomFitxerPropietats) {
         if (nomFitxerPropietats == null) {
@@ -83,8 +83,6 @@ public class EPCookomatic {
         }
     }
 
-    
-    
     /**
      * Intenta recuperar l'empleat amb codi indicat per paràmetre.
      *
@@ -97,94 +95,97 @@ public class EPCookomatic {
         List<Categoria> categories = new ArrayList<>();
 
         Query q = em.createNamedQuery("Categories");
-        
+
         categories = (List<Categoria>) q.getResultList();
-        for(Categoria c : categories)
-        {
-            System.out.println("categoria: "+c);
+        for (Categoria c : categories) {
+            System.out.println("categoria: " + c);
         }
-        
+
         return categories;
 //        return em.find(Empleat.class, (short) codi);
-    }    
-
-
-
+    }
 
     public List<Plat> getPlats() {
         List<Plat> plats = new ArrayList<>();
 
         Query q = em.createNamedQuery("Plats");
-        
+
         plats = (List<Plat>) q.getResultList();
-        for(Plat p : plats)
-        {
-            System.out.println("plats: "+p);
+        for (Plat p : plats) {
+            System.out.println("plats: " + p);
         }
-        
+
         return plats;
 //        return em.find(Empleat.class, (short) codi);
-    }    
-
+    }
 
     public List<Plat> getPlatsFiltrats(Categoria c, Boolean disponible) {
         List<Plat> plats = new ArrayList<>();
         Query q = null;
 
-        // Opció: Disponibilitat: TOTES
-        if (disponible==null){
-            q = em.createNamedQuery("PlatsPerCategoria");
+        if (c == null) {
+            q = em.createNamedQuery("PlatsFiltratsDisponibilitat");
         } else {
-            q = em.createNamedQuery("PlatsFiltratsCategoriaDisponibilitat");
+            q = em.createNamedQuery("PlatsFiltratsCategoriaDisp");
+            q.setParameter("categoria", c);
+        }
+
+/*        
+        if (disponible==null)
+            q.setParameter("disponible", "disponible");
+        else
             q.setParameter("disponible", disponible);
+*/        
+        List<Boolean> disponibilitats = new ArrayList<>();
+
+        disponibilitats.add(true);
+        disponibilitats.add(false);
+        if (disponible != null) {
+            if (disponible) {
+                disponibilitats.remove(false);
+            } else if (!disponible) {
+                disponibilitats.remove(true);
+            }
         }
-        q.setParameter("categoria", c);
-        
+        q.setParameter("disponible", disponibilitats);
+
+        // Opció: Disponibilitat: TOTES
+//        if (disponible==null){
+//            q = em.createNamedQuery("PlatsPerCategoria");
+//        } else {
+//            q = em.createNamedQuery("PlatsFiltratsCategoriaDisponibilitat");
+//            q.setParameter("disponible", disponible);
+//        }
+//        q.setParameter("categoria", c);
         plats = (List<Plat>) q.getResultList();
-        for(Plat p : plats)
-        {
-            System.out.println("plats: "+p);
+        for (Plat p : plats) {
+            System.out.println("plats: " + p);
         }
-        
+
         return plats;
 //        return em.find(Empleat.class, (short) codi);
-    }    
-
+    }
 
     public List<Plat> getPlatsPerDisponibilitat(boolean disponible) {
         List<Plat> plats = new ArrayList<>();
 
         Query q = em.createNamedQuery("PlatsPerDisponibilitat");
         q.setParameter("disponible", disponible);
-        
+
         plats = (List<Plat>) q.getResultList();
-        for(Plat p : plats)
-        {
-            System.out.println("plats: "+p);
+        for (Plat p : plats) {
+            System.out.println("plats: " + p);
         }
-        
+
         return plats;
 //        return em.find(Empleat.class, (short) codi);
-    }    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    }
+
     /**
      * Tanca la capa de persistència, tancant la connexió amb la BD.
      *
-     * @throws EPCookomaticException si hi ha algun problema en tancar la connexió
+     * @throws EPCookomaticException si hi ha algun problema en tancar la
+     * connexió
      */
     public void close() {
         EntityManagerFactory emf = null;
@@ -232,11 +233,5 @@ public class EPCookomatic {
             throw new EPCookomaticException("Error en fer rollback", ex);
         }
     }
-    
-    
-    
-    
-    
-    
-    
+
 }

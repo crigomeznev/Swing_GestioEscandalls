@@ -21,6 +21,19 @@
             <query>select p from Plat p where p.categoria = :categoria and p.disponible = :disponible</query>
         </named-query>
 
+
+        <named-query name="PlatsFiltratsCategoriaDisp">
+            <query>select p from Plat p where p.disponible in :disponible
+                    and p.categoria = :categoria</query>
+        </named-query>
+        <named-query name="PlatsFiltratsDisponibilitat">
+            <query>select p from Plat p where p.disponible in :disponible</query>
+        </named-query>        
+<!--        <named-query name="PlatsFiltratsCategoriaDisp">
+            <query>select p from Plat p where p.disponible in :disponible
+                    and p.categoria = :categoria</query>
+        </named-query>-->
+
         <attributes>
             <id name="codi">
                 <column name="CODI"/>
@@ -29,7 +42,7 @@
                 <column name="NOM" nullable="false"/>
             </basic>
             <basic name="descripcioMD" optional="false">
-                <column name="DESCRIPCIO_MD"/>
+                <column name="DESCRIPCIO_MD" column-definition="TEXT"/>
             </basic>
             <basic name="preu" optional="false">
                 <column name="PREU"/>

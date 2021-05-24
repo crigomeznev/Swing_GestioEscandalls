@@ -59,8 +59,9 @@ public class SwingWindow {
     
 //    private DefaultListModel modelLlista;
     private MutableComboBoxModel<String> cboModel;
-    private ArrayList<String> categories = new ArrayList<>(){};
+    private ArrayList<String> categories;// = new ArrayList<>(){};
     private JComboBox cboCategories;
+    private JButton btnAnullarSeleccioCat;
     private JRadioButton rdoDispSi, rdoDispNo, rdoDispTotes;
     private ButtonGroup grupRadios;
     
@@ -78,7 +79,7 @@ public class SwingWindow {
     private EPCookomatic cp;
     private String nomFitxerPropietats;
     private List<Categoria> llistaCategories = new ArrayList<>();
-    private List<Plat> llistaPlats = new ArrayList<>();
+    private List<Plat> llistaPlats;// = new ArrayList<>();
     private List<LiniaEscandall> llistaEscandall = new ArrayList<>();
 
   
@@ -130,15 +131,26 @@ public class SwingWindow {
         // TODO: carregar cboCategories amb dades BD
 
         // Ini cboModel
+        llistaCategories = new ArrayList<>();
         llistaCategories = cp.getCategories();
-        llistaPlats = cp.getPlats();
+        llistaPlats = new ArrayList<>();
+//        llistaPlats = cp.getPlats();
         
         iniCboModel();
         
 //        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
         cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
+        btnAnullarSeleccioCat = new JButton("Anul·la la selecció");
+        btnAnullarSeleccioCat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cboCategories.setSelectedItem(null);
+            }
+        });
         JPanel panellCategories = new JPanel();
+        panellCategories.setLayout(new BoxLayout(panellCategories, BoxLayout.Y_AXIS));
         panellCategories.add(cboCategories);
+        panellCategories.add(btnAnullarSeleccioCat);
         panellEsq.add(panellCategories);
         
         // RadioButtons: si, no, totes
@@ -437,10 +449,11 @@ public class SwingWindow {
             Categoria catSeleccionada = null;
 
             // si han seleccionat una categoria
-            if (cboCategories.getSelectedIndex()!=0){
+            if (cboCategories.getSelectedItem() != null){
                 catSeleccionada = (Categoria)cboCategories.getSelectedItem();
             }
 
+            // Filtrar per disponibilitat
             Boolean disponible = null;
             if (rdoDispSi.isSelected())
                 disponible = true;
@@ -449,17 +462,6 @@ public class SwingWindow {
 
             llistaPlats = cp.getPlatsFiltrats(catSeleccionada, disponible);
             actualitzarModel();
-//            buidarTaula();
-//            if (catSeleccionada!=null){
-//                llistaPlats = cp.getPlatsFiltrats(catSeleccionada);
-//                clearTable();
-////                omplirTaula();
-////                ((AbstractTableModel) taulaPlats.getModel()).fireTableDataChanged(); // Repaint one cell.
-//            } else {
-//                boolean disponible = rdoDispSi.isSelected()? true : false;
-//                
-//                llistaPlats = cp.getPlatsPerDisponibilitat(true);
-//            }
         }
     }
 
