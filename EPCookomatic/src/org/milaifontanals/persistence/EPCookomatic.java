@@ -19,6 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.milaifontanals.cookomatic.model.cuina.Categoria;
+import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
 import org.milaifontanals.cookomatic.model.cuina.Plat;
 
 /**
@@ -180,6 +181,21 @@ public class EPCookomatic {
         return plats;
 //        return em.find(Empleat.class, (short) codi);
     }
+
+//    public List<LiniaEscandall> getEscandallPerPlat(Plat plat) {
+//        List<LiniaEscandall> escandall = new ArrayList<>();
+//
+//        Query q = em.createNamedQuery("PlatsPerDisponibilitat");
+//        q.setParameter("disponible", disponible);
+//
+//        escandall = (List<Plat>) q.getResultList();
+//        for (Plat p : escandall) {
+//            System.out.println("plats: " + p);
+//        }
+//
+//        return escandall;
+////        return em.find(Empleat.class, (short) codi);
+//    }
 
     /**
      * Tanca la capa de persistència, tancant la connexió amb la BD.

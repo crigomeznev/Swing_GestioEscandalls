@@ -60,20 +60,9 @@
             </many-to-one>
 
             <!-- todo: one2many -->
-            <element-collection name="escandall">
-                <!--<order-column name="ordre" nullable="false" column-definition="numeric(2,0)"/>-->
-                <!--El següent element és per redefinir el marcatge hereteat de la classe incrustada
-                en cas que interessi. No sempre sera necessari -->
-<!--                <attribute-override name="correu">
-                    <column name="e_mail" length="320"/>
-                </attribute-override>-->
-                <collection-table name="linia_escandall">
+            <element-collection name="escandall" fetch="EAGER">
+                <collection-table name="LINIA_ESCANDALL">
                     <join-column name="PLAT"/>
-                    <!--<foreign-key name="persona_correus_fk_dni"/>-->
-<!--                    <unique-constraint name="persona_correus_un_dni_mail">
-                        <column-name>dni</column-name>                         
-                        <column-name>e_mail</column-name>
-                    </unique-constraint>-->
                 </collection-table>
             </element-collection>            
 

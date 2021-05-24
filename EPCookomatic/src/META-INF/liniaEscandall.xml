@@ -10,15 +10,15 @@
 <!--        <named-query name="Categories">
             <query>select c from Categoria c</query>
         </named-query>-->
-
         <attributes>
 <!--            <id name="codi">
                 <column name="CODI"/>
             </id>-->
-            
-            
-            <basic name="nom" optional="false">
-                <column name="NOM"/>
+            <basic name="num" optional="false">
+                <column name="NUM"/>
+            </basic>
+            <basic name="quantitat" optional="false">
+                <column name="QUANTITAT"/>
             </basic>
 
 
