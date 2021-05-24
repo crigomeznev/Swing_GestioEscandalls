@@ -6,8 +6,7 @@
                  version="2.2">
     <embeddable class="org.milaifontanals.cookomatic.model.cuina.LiniaEscandall" access="FIELD" metadata-complete="true">
         <!--<table name="LINIA_ESCANDALL"/>-->
-        
-<!--        <named-query name="Categories">
+<!--        <named-query name="Escandalls">
             <query>select c from Categoria c</query>
         </named-query>-->
         <attributes>

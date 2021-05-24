@@ -48,8 +48,8 @@
                 <column name="PREU"/>
             </basic>
             <basic name="fotoBlob">
-                <lob></lob>
                 <column name="FOTO" column-definition="MEDIUMBLOB"/>
+                <lob></lob>
             </basic>
             <basic name="disponible">
                 <column name="DISPONIBLE"/>
