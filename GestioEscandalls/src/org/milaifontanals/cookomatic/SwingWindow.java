@@ -129,14 +129,14 @@ public class SwingWindow {
 //        cboModel.addElement("-------------");
         cboModel = new DefaultComboBoxModel(llistaCategories.toArray());
 //        cboModel.insertElementAt("------------", 0);
-        cboModel.addElement("-------------");
+//        cboModel.addElement("-------------");
     }
 
     private void afegirElements() {
         panellEsq = new JPanel();
         panellEsq.setLayout(new BoxLayout(panellEsq, BoxLayout.X_AXIS));
         
-        cboCategories = new JComboBox<String>();
+//        cboCategories = new JComboBox<String>();
         // TODO: carregar cboCategories amb dades BD
 
         // Ini cboModel
@@ -149,6 +149,8 @@ public class SwingWindow {
         
 //        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
         cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
+        cboCategories.setSelectedItem(null); // inicialment cap categoria seleccionada
+        
         btnAnullarSeleccioCat = new JButton("Anul·la la selecció");
         btnAnullarSeleccioCat.addActionListener(new ActionListener() {
             @Override

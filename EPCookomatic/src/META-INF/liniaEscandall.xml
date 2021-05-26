@@ -14,9 +14,9 @@
 <!--            <id name="codi">
                 <column name="CODI"/>
             </id>-->
-            <basic name="num" optional="false">
+<!--            <basic name="num" optional="false">
                 <column name="NUM"/>
-            </basic>
+            </basic>-->
             <basic name="quantitat" optional="false">
                 <column name="QUANTITAT"/>
             </basic>

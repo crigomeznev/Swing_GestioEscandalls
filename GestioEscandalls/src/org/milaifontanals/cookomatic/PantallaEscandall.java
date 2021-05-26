@@ -60,7 +60,10 @@ import org.milaifontanals.persistence.EPCookomatic;
  * @author Usuari
  */
 public class PantallaEscandall extends JDialog {
-
+    // CONSTANTS
+    private final int MAXQUANTITAT = 10000;
+    
+    
     // Dades
     private Plat plat;
     private List<LiniaEscandall> escandall = new ArrayList<>();
@@ -228,7 +231,7 @@ UNITAT
         prepararFormLiniaEscandall();
 
         add(panellSup, BorderLayout.NORTH);
-        add(panellMig, BorderLayout.CENTER);
+//        add(panellMig, BorderLayout.CENTER);
         add(panellInf, BorderLayout.SOUTH);
     }
 
@@ -295,7 +298,9 @@ UNITAT
         Border marc = BorderFactory.createLineBorder(java.awt.Color.GREEN, 10);
         scroll.setBorder(marc);
         // afegir JTable dins el JFrame
-        panellMig.add(scroll);
+//        panellMig.add(scroll);
+        add(scroll, BorderLayout.CENTER);
+
     }
 
 //    private void iniModels() {
@@ -356,16 +361,16 @@ UNITAT
         cboUnitats = new JComboBox(new DefaultComboBoxModel(unitats.toArray()));
 
         // Altres camps
-        SpinnerNumberModel spnNumModel = new SpinnerNumberModel(1, 1, 30, 1);
-        SpinnerNumberModel spnQuantitatModel = new SpinnerNumberModel(1, 1, 10, 1);
+//        SpinnerNumberModel spnNumModel = new SpinnerNumberModel(1, 1, 30, 1);
+        SpinnerNumberModel spnQuantitatModel = new SpinnerNumberModel(1, 1, MAXQUANTITAT, 1); // TODO: spinner diferent depenent de l'unitat triada
         spnQuantitat = new JSpinner(spnQuantitatModel);
-        spnNum = new JSpinner(spnNumModel);
+//        spnNum = new JSpinner(spnNumModel);
         // TODO: text de l'spinner no editable
 
-        JPanel panellNum = new JPanel();
-        panellNum.setLayout(new BoxLayout(panellNum, BoxLayout.Y_AXIS));
-        panellNum.add(new JLabel("Número"));
-        panellNum.add(spnNum);
+//        JPanel panellNum = new JPanel();
+//        panellNum.setLayout(new BoxLayout(panellNum, BoxLayout.Y_AXIS));
+//        panellNum.add(new JLabel("Número"));
+//        panellNum.add(spnNum);
 
         JPanel panellIng = new JPanel();
         panellIng.setLayout(new BoxLayout(panellIng, BoxLayout.Y_AXIS));
@@ -391,7 +396,7 @@ UNITAT
         panellBotons.add(btnAfegirLinia);
         panellBotons.add(btnEliminarLinia);
 
-        panellInf.add(panellNum);
+//        panellInf.add(panellNum);
         panellInf.add(panellIng);
         panellInf.add(panellQtat);
         panellInf.add(panellUnitat);
@@ -414,12 +419,14 @@ UNITAT
                 System.out.println("Afegir línia");
                 
                 if (comprovarFormValid()){
-                    int num = (int)spnNum.getValue();
+//                    int num = (int)spnNum.getValue();
+                    int num = plat.getMinimNumDisponibleLiniaEscandall();
                     int qtat = (int)spnQuantitat.getValue();
                     Unitat u = (Unitat)cboUnitats.getSelectedItem();
                     Ingredient i = (Ingredient)cboIngredients.getSelectedItem();
                     
-                    LiniaEscandall linia = new LiniaEscandall(plat.getPrimerLiniaEscandallNum(), qtat, i, u);
+//                    LiniaEscandall linia = new LiniaEscandall(plat.getPrimerLiniaEscandallNum(), qtat, i, u);
+                    LiniaEscandall linia = new LiniaEscandall(num, qtat, i, u);
                     cp.inserirLiniaEscandall(linia, plat);
                     actualitzarModel();
                     parent.actualitzarPlat(plat);

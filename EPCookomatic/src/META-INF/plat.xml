@@ -24,22 +24,22 @@
 
         <named-query name="PlatsFiltratsCategoriaDisp">
             <query>select p from Plat p where p.disponible in :disponible
-                    and p.categoria = :categoria</query>
+                and p.categoria = :categoria</query>
         </named-query>
         <named-query name="PlatsFiltratsDisponibilitat">
             <query>select p from Plat p where p.disponible in :disponible</query>
         </named-query>        
         
         
-<!--        <named-native-query name="EscandallPerPlat">
+        <!--        <named-native-query name="EscandallPerPlat">
             <query>SELECT NUM, QUANTITAT, PLAT, INGREDIENT, UNITAT FROM LINIA_ESCANDALL WHERE PLAT = :plat</query>
         </named-native-query>-->
         
-<!--        <named-query name="">
+        <!--        <named-query name="">
             <query>select le from LiniaEscandall le where </query>
         </named-query>-->
         
-<!--        <named-query name="PlatsFiltratsCategoriaDisp">
+        <!--        <named-query name="PlatsFiltratsCategoriaDisp">
             <query>select p from Plat p where p.disponible in :disponible
                     and p.categoria = :categoria</query>
         </named-query>-->
@@ -66,16 +66,18 @@
             </basic>
             
             <many-to-one name="categoria" fetch="LAZY">
-               <join-column name="CATEGORIA"/>
+                <join-column name="CATEGORIA"/>
             </many-to-one>
 
             <!-- todo: one2many -->
             <element-collection name="escandall" fetch="EAGER">
+                <!--<order-column name="NUM" nullable="false" column-definition="num(11)"/>-->
+                <order-by>NUM</order-by>
                 <collection-table name="LINIA_ESCANDALL">
                     <join-column name="PLAT"/>
                 </collection-table>
                 
-<!--                <many-to-one name="unitat" fetch="LAZY">
+                <!--                <many-to-one name="unitat" fetch="LAZY">
                     <join-column name="UNITAT"/>
                 </many-to-one>
                 <many-to-one name="ingredient" fetch="LAZY">
