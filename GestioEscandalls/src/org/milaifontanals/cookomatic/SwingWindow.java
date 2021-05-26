@@ -47,8 +47,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import org.milaifontanals.cookomatic.model.cuina.Categoria;
+import org.milaifontanals.cookomatic.model.cuina.Ingredient;
 import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
 import org.milaifontanals.cookomatic.model.cuina.Plat;
+import org.milaifontanals.cookomatic.model.cuina.Unitat;
 import org.milaifontanals.persistence.EPCookomatic;
 
 /**
@@ -86,6 +88,9 @@ public class SwingWindow {
     private List<Plat> llistaPlats;// = new ArrayList<>();
     private List<LiniaEscandall> llistaEscandall = new ArrayList<>();
 
+    // Per a la subfinestra d'escandalls
+    private List<Ingredient> llistaIngredients = new ArrayList<>();
+    private List<Unitat> llistaUnitats = new ArrayList<>();
   
     // Taula plats
     private JScrollPane scrollTaula;
@@ -103,6 +108,10 @@ public class SwingWindow {
         
         cp = new EPCookomatic(nomFitxerPropietats);
 
+        llistaIngredients = cp.getIngredients();
+        llistaUnitats = cp.getUnitats();
+        
+        
         afegirElements();
 //        iniTaula();
         prepararSubfinestra();
@@ -196,7 +205,7 @@ public class SwingWindow {
 
     
     private void prepararSubfinestra() {
-        subfEscandall = new PantallaEscandall("Escandall", null, null);
+        subfEscandall = new PantallaEscandall("Escandall", null, cp, null, this);
 
 //        subfinestra.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -303,6 +312,17 @@ public class SwingWindow {
     
     
 
+    // Subfinestra actualitza el plat:
+    public void actualitzarPlat(Plat platActualitzat){
+//        Plat plat = (Plat)taulaPlats.getValueAt(0, taulaPlats.getSelectedRow());
+//        if (plat!=null){
+//            plat = platActualitzat;
+//        }
+        System.out.println("actualitzar plats");
+        llistaPlats = cp.getPlats();
+        actualitzarModel();
+
+    }
 
     
 //    private void omplirTaula() {
@@ -368,6 +388,16 @@ public class SwingWindow {
                 if (taulaPlats.getSelectedRow() != -1){
                     // Han seleccionat un plat, procedim a veure el seu escandall
                     Plat plat = (Plat)taulaPlats.getValueAt(taulaPlats.getSelectedRow(), 0);
+                    
+//                    List<LiniaEscandall> escandall = cp.getEscandallPerPlat(plat);
+                    
+//                    plat.setEscandall(escandall);
+                    for(LiniaEscandall le : plat.getEscandall()){
+                        System.out.println(le);
+                    }
+
+                    // "actualitzem" plat (el tornem a carregar de la bd
+                    plat = cp.getPlatPerCodi(plat.getCodi());
                     subfEscandall.setPlat(plat);
                     subfEscandall.setVisible(true);
                     

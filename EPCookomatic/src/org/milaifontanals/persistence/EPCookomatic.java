@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import javax.persistence.EntityManager;
@@ -19,8 +20,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.milaifontanals.cookomatic.model.cuina.Categoria;
+import org.milaifontanals.cookomatic.model.cuina.Ingredient;
 import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
 import org.milaifontanals.cookomatic.model.cuina.Plat;
+import org.milaifontanals.cookomatic.model.cuina.Unitat;
 
 /**
  *
@@ -131,12 +134,12 @@ public class EPCookomatic {
             q.setParameter("categoria", c);
         }
 
-/*        
+        /*        
         if (disponible==null)
             q.setParameter("disponible", "disponible");
         else
             q.setParameter("disponible", disponible);
-*/        
+         */
         List<Boolean> disponibilitats = new ArrayList<>();
 
         disponibilitats.add(true);
@@ -182,21 +185,132 @@ public class EPCookomatic {
 //        return em.find(Empleat.class, (short) codi);
     }
 
-//    public List<LiniaEscandall> getEscandallPerPlat(Plat plat) {
-//        List<LiniaEscandall> escandall = new ArrayList<>();
-//
-//        Query q = em.createNamedQuery("PlatsPerDisponibilitat");
-//        q.setParameter("disponible", disponible);
-//
-//        escandall = (List<Plat>) q.getResultList();
-//        for (Plat p : escandall) {
-//            System.out.println("plats: " + p);
-//        }
-//
-//        return escandall;
-////        return em.find(Empleat.class, (short) codi);
-//    }
+    public Plat getPlatPerCodi(long codi) {
+        return (Plat)em.find(Plat.class, codi);
+    }
 
+    public List<LiniaEscandall> getEscandallPerPlat(Plat plat) {
+        List<LiniaEscandall> escandall = new ArrayList<>();
+
+        Query q = em.createNamedQuery("EscandallPerPlat");
+        q.setParameter("plat", plat.getCodi());
+
+        List<Object[]> res = q.getResultList();
+
+        for (Object[] obj : res) {
+//NUM
+//QUANTITAT
+//PLAT
+//INGREDIENT
+//UNITAT
+            int num = (int) obj[0];
+            int quantitat = (int) obj[1];
+
+            java.math.BigInteger codiIngredient = (java.math.BigInteger) obj[3];
+            long codiIng = codiIngredient.longValue();
+            Ingredient ingredient = getIngredientPerCodi(codiIng);
+
+            java.math.BigInteger codiUnitat = (java.math.BigInteger) obj[4];
+            long codiUn = codiUnitat.longValue();
+            Unitat unitat = getUnitatPerCodi(codiUn);
+
+            LiniaEscandall le = new LiniaEscandall(num, quantitat, ingredient, unitat);
+            escandall.add(le);
+        }
+
+        return escandall;
+//        return em.find(Empleat.class, (short) codi);
+    }
+
+    public Ingredient getIngredientPerCodi(long codi) {
+//        Ingredient i = null;
+//
+//        Query q = em.createNamedQuery("IngredientPerCodi");
+//        q.setParameter("codi", codi);
+//
+//        i = (Ingredient)q.getSingleResult();
+//
+//        return i;
+        return em.find(Ingredient.class, codi);
+    }
+
+    public Unitat getUnitatPerCodi(long codi) {
+//        Ingredient i = null;
+//
+//        Query q = em.createNamedQuery("IngredientPerCodi");
+//        q.setParameter("codi", codi);
+//
+//        i = (Ingredient)q.getSingleResult();
+//
+//        return i;
+        return em.find(Unitat.class, codi);
+    }
+
+    public List<Ingredient> getIngredients() {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        Query q = em.createNamedQuery("Ingredients");
+
+        ingredients = (List<Ingredient>) q.getResultList();
+//        for (Ingredient c : ingredients) {
+//            System.out.println("categoria: " + c);
+//        }
+
+        return ingredients;
+//        return em.find(Empleat.class, (short) codi);
+    }
+
+
+    public List<Unitat> getUnitats() {
+        List<Unitat> unitats = new ArrayList<>();
+
+        Query q = em.createNamedQuery("Unitats");
+
+        unitats = (List<Unitat>) q.getResultList();
+//        for (Ingredient c : ingredients) {
+//            System.out.println("categoria: " + c);
+//        }
+
+        return unitats;
+//        return em.find(Empleat.class, (short) codi);
+    }
+
+
+    public void inserirLiniaEscandall(LiniaEscandall linia, Plat plat) {
+//        for (Iterator i = plat.getEscandall().iterator(); i.hasNext();) {
+//            LiniaEscandall le = (LiniaEscandall)i.next();
+//            if (le.equals(linia)){
+//                i.();
+//                break; // nomes eliminem 1 linia i marxem
+//            }
+//        }
+        plat.addLiniaEscandall(linia);
+        em.merge(plat);
+        em.persist(plat);
+        
+//        em.remove(linia);
+        commit();        
+    }
+
+    
+    public void eliminarLiniaEscandall(LiniaEscandall linia, Plat plat) {
+        for (Iterator i = plat.getEscandall().iterator(); i.hasNext();) {
+            LiniaEscandall le = (LiniaEscandall)i.next();
+            if (le.equals(linia)){
+                i.remove();
+                break; // nomes eliminem 1 linia i marxem
+            }
+        }
+        em.merge(plat);
+        em.persist(plat);
+        
+//        em.remove(linia);
+        commit();
+    }
+    
+    
+    
+    
     /**
      * Tanca la capa de persistència, tancant la connexió amb la BD.
      *

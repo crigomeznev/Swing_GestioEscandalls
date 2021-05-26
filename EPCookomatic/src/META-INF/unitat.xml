@@ -7,9 +7,11 @@
     <entity class="org.milaifontanals.cookomatic.model.cuina.Unitat" access="FIELD" metadata-complete="true">
         <table name="UNITAT"/>
         
-<!--        <named-query name="Categories">
-            <query>select c from Categoria c</query>
-        </named-query>-->
+        <named-query name="Unitats">
+            <query>select u from Unitat u</query>
+        </named-query>
+        
+        
 
         <attributes>
             <id name="codi">

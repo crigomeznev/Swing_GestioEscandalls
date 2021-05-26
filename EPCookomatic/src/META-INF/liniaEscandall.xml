@@ -6,6 +6,7 @@
                  version="2.2">
     <embeddable class="org.milaifontanals.cookomatic.model.cuina.LiniaEscandall" access="FIELD" metadata-complete="true">
         <!--<table name="LINIA_ESCANDALL"/>-->
+        
 <!--        <named-query name="Escandalls">
             <query>select c from Categoria c</query>
         </named-query>-->
@@ -24,10 +25,10 @@
 <!--            <many-to-one name="plat" fetch="LAZY">
                 <join-column name="PLAT"/>
             </many-to-one>-->
-            <many-to-one name="unitat" fetch="LAZY">
+            <many-to-one name="unitat" fetch="EAGER">
                 <join-column name="UNITAT"/>
             </many-to-one>
-            <many-to-one name="ingredient" fetch="LAZY">
+            <many-to-one name="ingredient" fetch="EAGER">
                 <join-column name="INGREDIENT"/>
             </many-to-one>
         </attributes>

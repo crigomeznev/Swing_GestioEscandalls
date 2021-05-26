@@ -7,9 +7,12 @@
     <entity class="org.milaifontanals.cookomatic.model.cuina.Ingredient" access="FIELD" metadata-complete="true">
         <table name="INGREDIENT"/>
         
-<!--        <named-query name="Categories">
-            <query>select c from Categoria c</query>
-        </named-query>-->
+        <named-query name="Ingredients">
+            <query>select i from Ingredient i</query>
+        </named-query>
+        <named-query name="IngredientPerCodi">
+            <query>select i from Ingredient i where i.codi = :codi</query>
+        </named-query>
 
         <attributes>
             <id name="codi">
