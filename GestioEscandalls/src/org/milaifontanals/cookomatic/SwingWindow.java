@@ -126,28 +126,20 @@ public class SwingWindow {
     }
     
     private void iniCboModel(){
-//        cboModel.addElement("-------------");
         cboModel = new DefaultComboBoxModel(llistaCategories.toArray());
-//        cboModel.insertElementAt("------------", 0);
-//        cboModel.addElement("-------------");
     }
 
     private void afegirElements() {
         panellEsq = new JPanel();
         panellEsq.setLayout(new BoxLayout(panellEsq, BoxLayout.X_AXIS));
         
-//        cboCategories = new JComboBox<String>();
-        // TODO: carregar cboCategories amb dades BD
-
         // Ini cboModel
         llistaCategories = new ArrayList<>();
         llistaCategories = cp.getCategories();
         llistaPlats = new ArrayList<>();
-//        llistaPlats = cp.getPlats();
         
         iniCboModel();
         
-//        cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
         cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
         cboCategories.setSelectedItem(null); // inicialment cap categoria seleccionada
         
@@ -169,7 +161,6 @@ public class SwingWindow {
         rdoDispNo = new JRadioButton("No");
         rdoDispTotes = new JRadioButton("Totes");
         rdoDispTotes.setSelected(true);
-//        rdoDispTotes.setEnabled(true);
         grupRadios = new ButtonGroup();
         
         grupRadios.add(rdoDispSi);

@@ -26,8 +26,6 @@ public class SwingApp {
      */
     public static void main(String[] args) {
         SwingWindow sw = new SwingWindow("Gestió d'Escandalls", "connexio.properties");
-//        SwingWindow_COPY sw = new SwingWindow_COPY("Gestió d'Escandalls", "connexio.properties");
-
     }
     
 }

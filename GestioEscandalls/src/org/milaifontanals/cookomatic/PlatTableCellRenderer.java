@@ -10,6 +10,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -35,23 +36,19 @@ public class PlatTableCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         // definim les característiques de cada cel·la
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+        // Text centrat
+        setHorizontalAlignment(JLabel.CENTER);
         
-        
-//        modelPlats.ge
         Plat p = (Plat)table.getValueAt(row, 0);
         Categoria c = p.getCategoria();
         
         Color color = new Color(c.getColorInt());
         
-        
-        
         setBackground(color);
         
         setForeground(new Color(getComplementaryColor(c.getColorInt())));
-//        if (isColorDark(color.getRGB()))
-//            setForeground(Color.white);
-//        else
-//            setForeground(Color.BLACK);
+
         return this;
     }
     

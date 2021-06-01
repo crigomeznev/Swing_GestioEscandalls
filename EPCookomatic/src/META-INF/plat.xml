@@ -30,19 +30,6 @@
             <query>select p from Plat p where p.disponible in :disponible</query>
         </named-query>        
         
-        
-        <!--        <named-native-query name="EscandallPerPlat">
-            <query>SELECT NUM, QUANTITAT, PLAT, INGREDIENT, UNITAT FROM LINIA_ESCANDALL WHERE PLAT = :plat</query>
-        </named-native-query>-->
-        
-        <!--        <named-query name="">
-            <query>select le from LiniaEscandall le where </query>
-        </named-query>-->
-        
-        <!--        <named-query name="PlatsFiltratsCategoriaDisp">
-            <query>select p from Plat p where p.disponible in :disponible
-                    and p.categoria = :categoria</query>
-        </named-query>-->
 
         <attributes>
             <id name="codi">
@@ -57,10 +44,10 @@
             <basic name="preu" optional="false">
                 <column name="PREU"/>
             </basic>
-            <basic name="fotoBlob">
+<!--            <basic name="fotoBlob">
                 <column name="FOTO" column-definition="MEDIUMBLOB"/>
                 <lob></lob>
-            </basic>
+            </basic>-->
             <basic name="disponible">
                 <column name="DISPONIBLE"/>
             </basic>
@@ -69,26 +56,15 @@
                 <join-column name="CATEGORIA"/>
             </many-to-one>
 
-            <!-- todo: one2many -->
             <element-collection name="escandall" fetch="EAGER">
-                <!--<order-column name="NUM" nullable="false" column-definition="num(11)"/>-->
-                <order-by>NUM</order-by>
+                <order-by>num</order-by>
                 <collection-table name="LINIA_ESCANDALL">
                     <join-column name="PLAT"/>
                 </collection-table>
-                
-                <!--                <many-to-one name="unitat" fetch="LAZY">
-                    <join-column name="UNITAT"/>
-                </many-to-one>
-                <many-to-one name="ingredient" fetch="LAZY">
-                    <join-column name="INGREDIENT"/>
-                </many-to-one>                -->
             </element-collection>            
 
-
-
-
             <transient name="foto"></transient>
+            <transient name="fotoBa"></transient>
         </attributes>
     </entity>
 

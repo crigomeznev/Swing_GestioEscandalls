@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
@@ -45,8 +46,10 @@ import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.milaifontanals.cookomatic.model.cuina.Categoria;
 import org.milaifontanals.cookomatic.model.cuina.Ingredient;
@@ -63,7 +66,6 @@ public class PantallaEscandall extends JDialog {
     // CONSTANTS
     private final int MAXQUANTITAT = 10000;
     
-    
     // Dades
     private Plat plat;
     private List<LiniaEscandall> escandall = new ArrayList<>();
@@ -72,36 +74,45 @@ public class PantallaEscandall extends JDialog {
 
     // GUI
     private JPanel panellSup, panellMig, panellInf;
-//    private JTextField txtPlatCodi, txtPlatNom, txtPlatDesc, txtPlatPreu, txtPlatCategoria;
     private JLabel lblPlatCodi, lblPlatNom, lblPlatDesc, lblPlatPreu, lblPlatCategoria;
     private JTextArea txtPlatDesc;
-    private JCheckBox chkPlatDisponible;
-    // Foto?
+    private JLabel lblPlatDisponible;
 
     // Taula escandall
     private JTable taulaEscandall;
     private String[] titolsEscandall = new String[]{"", "NUM", "INGREDIENT", "QUANTITAT", "UNITAT"};
     private DefaultTableModel modelEscandall = new DefaultTableModel();
-    private JScrollPane scrollTaula;
-
-    // DML
     private JButton btnAfegirLinia, btnEliminarLinia;
+    private JSpinner spnQuantitat;
+    private JComboBox cboIngredients, cboUnitats;
 
     // Hibernate
     private EPCookomatic cp;
 
-    
     // Referència a altra window
     private SwingWindow parent;
-    /*          
-NUM
-QUANTITAT
-PLAT
-INGREDIENT
-UNITAT        
-     */
+
+
+
+    public PantallaEscandall(String titol, Plat plat, EPCookomatic cp, List<LiniaEscandall> escandall, SwingWindow parent) {
+        //BD
+        this.cp = cp;
+        this.parent = parent;
+
+        this.unitats = this.cp.getUnitats();
+        this.ingredients = this.cp.getIngredients();
+
+        afegirElements();
+        pack();
+        setSize(700, 500);
+//        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(false);
+        setPlat(plat);
+    }
+
+
     // Nova linia d'escandall
-//    private JTextField txtNum, txtQuantitat; // TODO: numberbox
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
@@ -117,36 +128,6 @@ UNITAT
     public void setUnitats(List<Unitat> unitats) {
         this.unitats = unitats;
     }
-
-    private JSpinner spnNum, spnQuantitat;
-    private JComboBox cboIngredients, cboUnitats;
-    private MutableComboBoxModel<String> modelIngredients, modelUnitats;
-
-    public PantallaEscandall(String titol, Plat plat, EPCookomatic cp, List<LiniaEscandall> escandall, SwingWindow parent) {
-        //BD
-//        this.unitats = unitats;
-//        this.ingredients = ingredients;
-        this.cp = cp;
-        this.parent = parent;
-
-        this.unitats = this.cp.getUnitats();
-        this.ingredients = this.cp.getIngredients();
-
-        afegirElements();
-        pack();
-//        subfEscandalls.setSize(250, 150);
-        setSize(500, 300);
-        setResizable(false);
-        // centrar-lo al frame
-        setLocationRelativeTo(null);
-//        subfinestra.setLocationRelativeTo(f);
-        setVisible(false);
-
-        setPlat(plat);
-//        setEscandall(escandall); // TODO: add, remove i ite per a escandall
-
-    }
-
     // GETTERS & SETTERS
     public Plat getPlat() {
         return plat;
@@ -159,18 +140,13 @@ UNITAT
             // Canvis en la GUI
             lblPlatCodi.setText(plat.getCodi() + "");
             lblPlatNom.setText(plat.getNom());
-//            lblPlatDesc.setText(plat.getDescripcioMD());
             txtPlatDesc.setText(plat.getDescripcioMD());
-            lblPlatPreu.setText(plat.getPreu() + "");
+            lblPlatPreu.setText(plat.getPreu() + "€");
             lblPlatCategoria.setText(plat.getCategoria().getNom());
-            chkPlatDisponible.setSelected(plat.isDisponible() ? true : false);
+            lblPlatDisponible.setText(plat.isDisponible()? "Disponible" : "No disponible");
 
             // copiem escandall
-//            this.escandall.clear();
             this.escandall = plat.getEscandall();
-//            while(plat.iteEscandall().hasNext()){
-//                escandall.add(plat.iteEscandall().next());
-//            }
             buidarModel();
             omplirModel();
         }
@@ -184,54 +160,64 @@ UNITAT
         this.escandall = escandall;
     }
 
+
+
+
 //-----------------------------------------------------------------------------------------
 // MÈTODES GUI
     private void afegirElements() {
         panellSup = new JPanel();
-        panellSup.setLayout(new BoxLayout(panellSup, BoxLayout.X_AXIS));
+        panellSup.setLayout(new BorderLayout());
+//        panellSup.setLayout(new BoxLayout(panellSup, BoxLayout.X_AXIS));
         panellMig = new JPanel();
         panellInf = new JPanel();
 
-        panellSup.setBackground(java.awt.Color.ORANGE);
-        panellMig.setBackground(java.awt.Color.cyan);
-        panellInf.setBackground(java.awt.Color.magenta);
-
         lblPlatCodi = new JLabel();
         lblPlatNom = new JLabel();
+        lblPlatNom.setFont(new Font("Serif", Font.ITALIC, 20));
         lblPlatDesc = new JLabel();
         txtPlatDesc = new JTextArea();
         txtPlatDesc.setEditable(false);
+        txtPlatDesc.setLineWrap(true);
         txtPlatDesc.setWrapStyleWord(true);
+        txtPlatDesc.setColumns(50);
+        txtPlatDesc.setRows(5);
+//        txtPlatDesc.setBounds(0, 0, 200, 50);
+        
         // Amplada fixa:
         txtPlatDesc.setColumns(150);
-//        txtPlatDesc.setMaximumSize(new Dimension(200, 70));
         lblPlatPreu = new JLabel();
+        lblPlatPreu.setFont(new Font("Serif", Font.PLAIN, 14));
         lblPlatCategoria = new JLabel();
-        chkPlatDisponible = new JCheckBox("Disponible?");
-        chkPlatDisponible.setEnabled(false);
+        lblPlatDisponible = new JLabel();
+        lblPlatDisponible.setFont(new Font("Serif", Font.PLAIN, 14));
 
         JPanel panellNom = new JPanel();
-        panellNom.setLayout(new BoxLayout(panellNom, BoxLayout.Y_AXIS));
+        panellNom.setLayout(new BoxLayout(panellNom, BoxLayout.PAGE_AXIS));
         JPanel panellPreu = new JPanel();
         panellPreu.setLayout(new BoxLayout(panellPreu, BoxLayout.Y_AXIS));
 
         panellNom.add(lblPlatNom);
         panellNom.add(txtPlatDesc);
         panellPreu.add(lblPlatPreu);
-        panellPreu.add(chkPlatDisponible);
+        panellPreu.add(lblPlatDisponible);
 
-        panellNom.setBackground(java.awt.Color.red);
-        panellPreu.setBackground(java.awt.Color.yellow);
+        panellNom.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panellPreu.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        Color colorBeige = Color.BEIGE;
+        java.awt.Color colorAwt = new java.awt.Color((float)colorBeige.getRed(), (float)colorBeige.getGreen(), (float)colorBeige.getBlue());
+        
+        panellNom.setBackground(colorAwt);
 
-        panellSup.add(panellNom);
-        panellSup.add(panellPreu);
+        panellSup.add(panellNom, BorderLayout.CENTER);
+        panellSup.add(panellPreu, BorderLayout.EAST);
 
         afegirTaulaEscandall();
 
         prepararFormLiniaEscandall();
 
         add(panellSup, BorderLayout.NORTH);
-//        add(panellMig, BorderLayout.CENTER);
         add(panellInf, BorderLayout.SOUTH);
     }
 
@@ -264,7 +250,7 @@ UNITAT
                         clazz = String.class;
                         break;
                     case 2:
-                        clazz = Integer.class;
+                        clazz = String.class;
                         break;
                     case 3:
                         clazz = String.class;
@@ -281,96 +267,29 @@ UNITAT
         // Amaguem la primera columna
         taulaEscandall.getColumnModel().getColumn(0).setMinWidth(0);
         taulaEscandall.getColumnModel().getColumn(0).setMaxWidth(0);
+        
+        // Text centrat
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        taulaEscandall.setDefaultRenderer(String.class, centerRenderer);
 
-        // afegir la fila amb els titols
-//        for (int i = 0; i < titolsEscandall.length; i++) {
-//            modelEscandall.addColumn(titolsEscandall[i]);
-//        }
-//        omplirTaulaEscandall();
-//        taulaPlats.getColumnModel().getColumn(0).setPreferredWidth(200);
-//        taulaPlats.getColumnModel().getColumn(1).setPreferredWidth(100);
-//        taulaPlats.getColumnModel().getColumn(2).setPreferredWidth(50);
-//        taula.getSelectionModel().addListSelectionListener(new GestioFiles());
         JScrollPane scroll = new JScrollPane(taulaEscandall, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setPreferredSize(new Dimension(400, 200));
 
-//        Border marc = BorderFactory.createLineBorder(f.getBackground(),10);
-        Border marc = BorderFactory.createLineBorder(java.awt.Color.GREEN, 10);
+        Border marc = BorderFactory.createLineBorder(java.awt.Color.LIGHT_GRAY, 10);
         scroll.setBorder(marc);
-        // afegir JTable dins el JFrame
-//        panellMig.add(scroll);
+
         add(scroll, BorderLayout.CENTER);
-
     }
 
-//    private void iniModels() {
-////        cboModel.addElement("-------------");
-//        modelIngredients = new DefaultComboBoxModel(ingredients.toArray());
-//        modelUnitats = new DefaultComboBoxModel(unitats.toArray());
-//    }
-    private void omplirModel() {
-        for (LiniaEscandall linia : escandall) {
-            Object[] obj = new Object[5];
-
-            obj[0] = linia; // necessitem una columna que desi l'objecte plat sencer
-            obj[1] = linia.getNum(); // necessitem una columna que desi l'objecte plat sencer
-            obj[2] = linia.getIngredient().getNom();
-            obj[3] = linia.getQuantitat();
-            obj[4] = linia.getUnitat().getNom();
-//            obj[2] = plat.getNom();
-
-            modelEscandall.addRow(obj);
-        }
-    }
-
-    private void buidarModel() {
-//        for (int i = 0; i < modelPlats.getRowCount(); i++) {
-//            modelPlats.removeRow(i);
-//        }
-        modelEscandall.setRowCount(0);
-    }
-    
-    private void actualitzarModel(){
-        buidarModel();
-        omplirModel();
-    }
-
-//    private void omplirTaulaEscandall() {
-//        // TODO: ini titols columnes amb dades reals de la BD
-//        String bdInfo[][] = obtenirMatriuEscandall();
-//
-//        taulaEscandall = new JTable(bdInfo, titolsEscandall);
-//    }
-//
-//    private String[][] obtenirMatriuEscandall() {
-//        String matriuInfo[][] = new String[llistaEscandall.size()][titolsEscandall.length];
-//
-//        for (int i = 0; i < llistaEscandall.size(); i++) {
-//            LiniaEscandall l = llistaEscandall.get(i);
-//
-//            matriuInfo[i][0] = l.getNum() + "";
-//            matriuInfo[i][1] = l.getQuantitat() + "";
-//            matriuInfo[i][2] = l.getIngredient().getNom() + "";
-//            matriuInfo[i][3] = l.getUnitat().getNom() + "";
-//        }
-//        return matriuInfo;
-//    }
     private void prepararFormLiniaEscandall() {
         // Combobox i models
         cboIngredients = new JComboBox(new DefaultComboBoxModel(ingredients.toArray()));
         cboUnitats = new JComboBox(new DefaultComboBoxModel(unitats.toArray()));
 
         // Altres camps
-//        SpinnerNumberModel spnNumModel = new SpinnerNumberModel(1, 1, 30, 1);
         SpinnerNumberModel spnQuantitatModel = new SpinnerNumberModel(1, 1, MAXQUANTITAT, 1); // TODO: spinner diferent depenent de l'unitat triada
         spnQuantitat = new JSpinner(spnQuantitatModel);
-//        spnNum = new JSpinner(spnNumModel);
-        // TODO: text de l'spinner no editable
-
-//        JPanel panellNum = new JPanel();
-//        panellNum.setLayout(new BoxLayout(panellNum, BoxLayout.Y_AXIS));
-//        panellNum.add(new JLabel("Número"));
-//        panellNum.add(spnNum);
 
         JPanel panellIng = new JPanel();
         panellIng.setLayout(new BoxLayout(panellIng, BoxLayout.Y_AXIS));
@@ -396,15 +315,43 @@ UNITAT
         panellBotons.add(btnAfegirLinia);
         panellBotons.add(btnEliminarLinia);
 
-//        panellInf.add(panellNum);
         panellInf.add(panellIng);
         panellInf.add(panellQtat);
         panellInf.add(panellUnitat);
         panellInf.add(panellBotons);
-
-//        panellInf.add(spnQuantitat);
     }
 
+//-----------------------------------------------------------------------------------------
+// MODEL
+    private void omplirModel() {
+        for (LiniaEscandall linia : escandall) {
+            Object[] obj = new Object[5];
+
+            obj[0] = linia; // necessitem una columna que desi l'objecte plat sencer
+            obj[1] = linia.getNum(); // necessitem una columna que desi l'objecte plat sencer
+            obj[2] = linia.getIngredient().getNom();
+            obj[3] = linia.getQuantitat();
+            obj[4] = linia.getUnitat().getNom();
+
+            modelEscandall.addRow(obj);
+        }
+    }
+
+    private void buidarModel() {
+        modelEscandall.setRowCount(0);
+    }
+    
+    private void actualitzarModel(){
+        buidarModel();
+        omplirModel();
+    }
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+// BOTONS
     private class GestioLiniaEscandall implements ActionListener {
 
         public GestioLiniaEscandall() {
@@ -419,35 +366,22 @@ UNITAT
                 System.out.println("Afegir línia");
                 
                 if (comprovarFormValid()){
-//                    int num = (int)spnNum.getValue();
                     int num = plat.getMinimNumDisponibleLiniaEscandall();
                     int qtat = (int)spnQuantitat.getValue();
                     Unitat u = (Unitat)cboUnitats.getSelectedItem();
                     Ingredient i = (Ingredient)cboIngredients.getSelectedItem();
                     
-//                    LiniaEscandall linia = new LiniaEscandall(plat.getPrimerLiniaEscandallNum(), qtat, i, u);
                     LiniaEscandall linia = new LiniaEscandall(num, qtat, i, u);
                     cp.inserirLiniaEscandall(linia, plat);
                     actualitzarModel();
                     parent.actualitzarPlat(plat);
                 }
                 
-                
-                
-                
-                
-                
-                
-                
-                
-
             } 
             // DELETE
             else if (boto.equals(btnEliminarLinia)) {
                 System.out.println("Eliminar línia");
 
-//                LiniaEscandall le = (LiniaEscandall)taulaEscandall.getValueAt(taulaEscandall.getSelectedRow(), 0);
-//                System.out.println(le);
                 if (taulaEscandall.getSelectedRow() != -1) {
                     LiniaEscandall le = escandall.get(taulaEscandall.getSelectedRow());
                     System.out.println(le);
@@ -455,14 +389,7 @@ UNITAT
                     cp.eliminarLiniaEscandall(le, plat);
                     actualitzarModel();
                     parent.actualitzarPlat(plat);
-                    
-                    
-//                    ingredients = cp.getIngredients();
-
-//                cp.remove();
-
                 }
-
             }
         }
     

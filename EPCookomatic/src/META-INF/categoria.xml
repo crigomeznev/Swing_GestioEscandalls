@@ -22,7 +22,7 @@
                 <column name="COLOR"/>
             </basic>
             
-            <transient name="color"></transient>
+            <!--<transient name="color"></transient>-->
         </attributes>
     </entity>
 

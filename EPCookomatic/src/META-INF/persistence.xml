@@ -16,16 +16,8 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
         <class>org.milaifontanals.cookomatic.model.cuina.Ingredient</class>
         <class>org.milaifontanals.cookomatic.model.cuina.LiniaEscandall</class>
         <class>org.milaifontanals.cookomatic.model.cuina.Plat</class>
-
-
         <properties>
-<!--            <property name="javax.persistence.jdbc.url" 
-                      value="jdbc:mysql://10.132.1.114:3306/cookomatic"/>
-            <property name="javax.persistence.jdbc.user" value="alumne"/>
-            <property name="javax.persistence.jdbc.password" value="alumne"/>-->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <!--<property name="javax.persistence.schema-generation.database.action" value="none"/>-->
-            <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hibernate.show_sql" value="true"/>
@@ -34,13 +26,20 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
     
     <persistence-unit name="UP-EclipseLink" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <mapping-file>META-INF/categoria.xml</mapping-file>
+        <mapping-file>META-INF/unitat.xml</mapping-file>
+        <mapping-file>META-INF/ingredient.xml</mapping-file>
+        <mapping-file>META-INF/liniaEscandall.xml</mapping-file>
+        <mapping-file>META-INF/plat.xml</mapping-file>
+        <class>org.milaifontanals.cookomatic.model.cuina.Categoria</class>
+        <class>org.milaifontanals.cookomatic.model.cuina.Unitat</class>
+        <class>org.milaifontanals.cookomatic.model.cuina.Ingredient</class>
+        <class>org.milaifontanals.cookomatic.model.cuina.LiniaEscandall</class>
+        <class>org.milaifontanals.cookomatic.model.cuina.Plat</class>
         <properties>
-<!--            <property name="javax.persistence.jdbc.url" 
-                      value="jdbc:mysql://10.132.1.114:3306/cookomatic"/>
-            <property name="javax.persistence.jdbc.user" value="alumne"/>
-            <property name="javax.persistence.jdbc.password" value="alumne"/>-->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="eclipselink.canonicalmodel.subpackage" value="one"/>
         </properties>
     </persistence-unit>
     

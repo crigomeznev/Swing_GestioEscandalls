@@ -5,26 +5,11 @@
           http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
                  version="2.2">
     <embeddable class="org.milaifontanals.cookomatic.model.cuina.LiniaEscandall" access="FIELD" metadata-complete="true">
-        <!--<table name="LINIA_ESCANDALL"/>-->
-        
-<!--        <named-query name="Escandalls">
-            <query>select c from Categoria c</query>
-        </named-query>-->
         <attributes>
-<!--            <id name="codi">
-                <column name="CODI"/>
-            </id>-->
-<!--            <basic name="num" optional="false">
-                <column name="NUM"/>
-            </basic>-->
             <basic name="quantitat" optional="false">
                 <column name="QUANTITAT"/>
             </basic>
 
-
-<!--            <many-to-one name="plat" fetch="LAZY">
-                <join-column name="PLAT"/>
-            </many-to-one>-->
             <many-to-one name="unitat" fetch="EAGER">
                 <join-column name="UNITAT"/>
             </many-to-one>
