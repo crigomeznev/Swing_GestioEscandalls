@@ -4,7 +4,7 @@
                  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
           http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
                  version="2.2">
-    <embeddable class="org.milaifontanals.cookomatic.model.cuina.LiniaEscandall" access="FIELD" metadata-complete="true">
+    <embeddable class="org.cookomatic.model.cuina.LiniaEscandall" access="FIELD" metadata-complete="true">
         <attributes>
             <basic name="quantitat" optional="false">
                 <column name="QUANTITAT"/>

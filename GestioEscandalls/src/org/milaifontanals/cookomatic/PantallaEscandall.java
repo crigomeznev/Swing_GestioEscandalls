@@ -51,11 +51,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import org.milaifontanals.cookomatic.model.cuina.Categoria;
-import org.milaifontanals.cookomatic.model.cuina.Ingredient;
-import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
-import org.milaifontanals.cookomatic.model.cuina.Plat;
-import org.milaifontanals.cookomatic.model.cuina.Unitat;
+import org.cookomatic.model.cuina.Categoria;
+import org.cookomatic.model.cuina.Ingredient;
+import org.cookomatic.model.cuina.LiniaEscandall;
+import org.cookomatic.model.cuina.Plat;
+import org.cookomatic.model.cuina.Unitat;
 import org.milaifontanals.persistence.EPCookomatic;
 
 /**

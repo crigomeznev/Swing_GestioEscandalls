@@ -11,11 +11,11 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
         <mapping-file>META-INF/ingredient.xml</mapping-file>
         <mapping-file>META-INF/liniaEscandall.xml</mapping-file>
         <mapping-file>META-INF/plat.xml</mapping-file>
-        <class>org.milaifontanals.cookomatic.model.cuina.Categoria</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Unitat</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Ingredient</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.LiniaEscandall</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Plat</class>
+        <class>org.cookomatic.model.cuina.Categoria</class>
+        <class>org.cookomatic.model.cuina.Unitat</class>
+        <class>org.cookomatic.model.cuina.Ingredient</class>
+        <class>org.cookomatic.model.cuina.LiniaEscandall</class>
+        <class>org.cookomatic.model.cuina.Plat</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
@@ -31,11 +31,11 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
         <mapping-file>META-INF/ingredient.xml</mapping-file>
         <mapping-file>META-INF/liniaEscandall.xml</mapping-file>
         <mapping-file>META-INF/plat.xml</mapping-file>
-        <class>org.milaifontanals.cookomatic.model.cuina.Categoria</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Unitat</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Ingredient</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.LiniaEscandall</class>
-        <class>org.milaifontanals.cookomatic.model.cuina.Plat</class>
+        <class>org.cookomatic.model.cuina.Categoria</class>
+        <class>org.cookomatic.model.cuina.Unitat</class>
+        <class>org.cookomatic.model.cuina.Ingredient</class>
+        <class>org.cookomatic.model.cuina.LiniaEscandall</class>
+        <class>org.cookomatic.model.cuina.Plat</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>

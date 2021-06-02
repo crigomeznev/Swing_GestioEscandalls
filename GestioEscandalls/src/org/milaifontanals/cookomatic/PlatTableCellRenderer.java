@@ -14,8 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import org.milaifontanals.cookomatic.model.cuina.Categoria;
-import org.milaifontanals.cookomatic.model.cuina.Plat;
+import org.cookomatic.model.cuina.Categoria;
+import org.cookomatic.model.cuina.Plat;
 
 /**
  *

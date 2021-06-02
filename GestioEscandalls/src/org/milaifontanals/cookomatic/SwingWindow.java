@@ -46,11 +46,11 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import org.milaifontanals.cookomatic.model.cuina.Categoria;
-import org.milaifontanals.cookomatic.model.cuina.Ingredient;
-import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
-import org.milaifontanals.cookomatic.model.cuina.Plat;
-import org.milaifontanals.cookomatic.model.cuina.Unitat;
+import org.cookomatic.model.cuina.Categoria;
+import org.cookomatic.model.cuina.Ingredient;
+import org.cookomatic.model.cuina.LiniaEscandall;
+import org.cookomatic.model.cuina.Plat;
+import org.cookomatic.model.cuina.Unitat;
 import org.milaifontanals.persistence.EPCookomatic;
 
 /**
@@ -119,7 +119,8 @@ public class SwingWindow {
         f.pack();
         f.setSize(700, 400);
         f.setResizable(false); // no permetre modificar la mida de la finestra
-        f.setLocation(10, 300); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
+        f.setLocationRelativeTo(null); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
+//        f.setLocation(10, 300); 
         // +x, més a la dreta
         // +y, més avall
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -19,11 +19,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import org.milaifontanals.cookomatic.model.cuina.Categoria;
-import org.milaifontanals.cookomatic.model.cuina.Ingredient;
-import org.milaifontanals.cookomatic.model.cuina.LiniaEscandall;
-import org.milaifontanals.cookomatic.model.cuina.Plat;
-import org.milaifontanals.cookomatic.model.cuina.Unitat;
+import org.cookomatic.model.cuina.Categoria;
+import org.cookomatic.model.cuina.Ingredient;
+import org.cookomatic.model.cuina.LiniaEscandall;
+import org.cookomatic.model.cuina.Plat;
+import org.cookomatic.model.cuina.Unitat;
 
 /**
  *
