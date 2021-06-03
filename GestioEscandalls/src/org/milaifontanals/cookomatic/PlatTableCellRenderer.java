@@ -23,11 +23,11 @@ import org.cookomatic.model.cuina.Plat;
  */
 public class PlatTableCellRenderer extends DefaultTableCellRenderer {
 //    private List<Plat> plats = new ArrayList<>();
-    private List<Categoria> categories = new ArrayList<>();
+//    private List<Categoria> categories = new ArrayList<>();
 //    private DefaultTableModel modelPlats;
 
     public PlatTableCellRenderer(List<Categoria> categories) {
-        this.categories = categories;
+//        this.categories = categories;
     }
     
     
@@ -62,14 +62,5 @@ public class PlatTableCellRenderer extends DefaultTableCellRenderer {
         B = 255 - B;
         return R + (G << 8) + ( B << 16) + ( A << 24);
     }  
-    
-    public boolean isColorDark(int color){
-        double darkness = 1-(0.299*Color.red.getRGB() + 0.587*Color.green.getRGB() + 0.114*Color.blue.getRGB())/255;
-        if(darkness<1){
-            return false; // It's a light color
-        }else{
-            return true; // It's a dark color
-        }
-    }    
     
 }

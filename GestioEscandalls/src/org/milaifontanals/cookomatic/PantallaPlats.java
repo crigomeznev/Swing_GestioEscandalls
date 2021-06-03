@@ -61,7 +61,7 @@ import org.milaifontanals.persistence.EPCookomatic;
  *
  * @author Usuari
  */
-public class SwingWindow {
+public class PantallaPlats {
     // Elements UI
     private JFrame f;
     private JPanel panellSup, panellCtl;
@@ -87,7 +87,7 @@ public class SwingWindow {
     private DefaultTableModel modelPlats = new DefaultTableModel();
 
     
-    public SwingWindow(String titol, String nomFitxerPropietats) {
+    public PantallaPlats(String titol, String nomFitxerPropietats) {
         f = new JFrame(titol);
         cp = new EPCookomatic(nomFitxerPropietats);
 
@@ -100,8 +100,20 @@ public class SwingWindow {
         f.setResizable(false); // no permetre modificar la mida de la finestra
         f.setLocationRelativeTo(null); // ubicar l'aplicació al monitor tant pixels x,y respecte el punt 0,0, superior,esquerra
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // MOLT IMPORTANT: tancar connexio i capa de persistència
+        f.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                System.out.println("Tancant cp");
+                cp.close();
+                System.out.println("cp tancada");
+            }
+        });        
     }
 
+    
+    
 
     private void afegirElements() {
         panellCtl = new JPanel();
@@ -111,7 +123,6 @@ public class SwingWindow {
         llistaCategories = new ArrayList<>();
         llistaCategories = cp.getCategories();
         llistaPlats = new ArrayList<>();
-
 
         // Combobox categories
         cboCategories = new JComboBox(new DefaultComboBoxModel(llistaCategories.toArray()));
@@ -131,6 +142,7 @@ public class SwingWindow {
         panellCategories.add(btnAnullarSeleccioCat);
         panellCategories.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
+
         panellCtl.add(panellCategories);
 
 

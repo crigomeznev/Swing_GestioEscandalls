@@ -18,14 +18,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Usuari
  */
-public class SwingApp {
-    
+public class App {
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SwingWindow sw = new SwingWindow("Gestió d'Escandalls", "connexio.properties");
+        PantallaPlats sw = new PantallaPlats("Gestió d'Escandalls", "connexio.properties");
     }
-    
 }

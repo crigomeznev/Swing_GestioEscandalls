@@ -73,8 +73,8 @@ public class PantallaEscandall extends JDialog {
     private List<Unitat> unitats = new ArrayList<>();
 
     // GUI
-    private JPanel panellSup, panellMig, panellInf;
-    private JLabel lblPlatCodi, lblPlatNom, lblPlatDesc, lblPlatPreu, lblPlatCategoria;
+    private JPanel panellSup, panellInf;
+    private JLabel lblPlatCodi, lblPlatNom, lblPlatPreu, lblPlatCategoria;
     private JTextArea txtPlatDesc;
     private JLabel lblPlatDisponible;
 
@@ -90,11 +90,11 @@ public class PantallaEscandall extends JDialog {
     private EPCookomatic cp;
 
     // Referència a altra window
-    private SwingWindow parent;
+    private PantallaPlats parent;
 
 
 
-    public PantallaEscandall(String titol, Plat plat, EPCookomatic cp, List<LiniaEscandall> escandall, SwingWindow parent) {
+    public PantallaEscandall(String titol, Plat plat, EPCookomatic cp, List<LiniaEscandall> escandall, PantallaPlats parent) {
         //BD
         this.cp = cp;
         this.parent = parent;
@@ -105,30 +105,14 @@ public class PantallaEscandall extends JDialog {
         afegirElements();
         pack();
         setSize(700, 500);
-//        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(false);
         setPlat(plat);
     }
 
 
-    // Nova linia d'escandall
-    public List<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public List<Unitat> getUnitats() {
-        return unitats;
-    }
-
-    public void setUnitats(List<Unitat> unitats) {
-        this.unitats = unitats;
-    }
-    // GETTERS & SETTERS
+//-----------------------------------------------------------------------------------------
+// GETTERS & SETTERS
     public Plat getPlat() {
         return plat;
     }
@@ -160,6 +144,23 @@ public class PantallaEscandall extends JDialog {
         this.escandall = escandall;
     }
 
+    // Nova linia d'escandall
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public List<Unitat> getUnitats() {
+        return unitats;
+    }
+
+    public void setUnitats(List<Unitat> unitats) {
+        this.unitats = unitats;
+    }
+    
 
 
 
@@ -168,21 +169,17 @@ public class PantallaEscandall extends JDialog {
     private void afegirElements() {
         panellSup = new JPanel();
         panellSup.setLayout(new BorderLayout());
-//        panellSup.setLayout(new BoxLayout(panellSup, BoxLayout.X_AXIS));
-        panellMig = new JPanel();
         panellInf = new JPanel();
 
         lblPlatCodi = new JLabel();
         lblPlatNom = new JLabel();
         lblPlatNom.setFont(new Font("Serif", Font.ITALIC, 20));
-        lblPlatDesc = new JLabel();
         txtPlatDesc = new JTextArea();
         txtPlatDesc.setEditable(false);
         txtPlatDesc.setLineWrap(true);
         txtPlatDesc.setWrapStyleWord(true);
         txtPlatDesc.setColumns(50);
         txtPlatDesc.setRows(5);
-//        txtPlatDesc.setBounds(0, 0, 200, 50);
         
         // Amplada fixa:
         txtPlatDesc.setColumns(150);
@@ -221,6 +218,7 @@ public class PantallaEscandall extends JDialog {
         add(panellInf, BorderLayout.SOUTH);
     }
 
+    
     // Taula escandall
     private void afegirTaulaEscandall() {
         // ini model
@@ -282,6 +280,7 @@ public class PantallaEscandall extends JDialog {
         add(scroll, BorderLayout.CENTER);
     }
 
+    
     private void prepararFormLiniaEscandall() {
         // Combobox i models
         cboIngredients = new JComboBox(new DefaultComboBoxModel(ingredients.toArray()));
@@ -321,6 +320,9 @@ public class PantallaEscandall extends JDialog {
         panellInf.add(panellBotons);
     }
 
+    
+    
+    
 //-----------------------------------------------------------------------------------------
 // MODEL
     private void omplirModel() {
@@ -337,9 +339,11 @@ public class PantallaEscandall extends JDialog {
         }
     }
 
+    
     private void buidarModel() {
         modelEscandall.setRowCount(0);
     }
+    
     
     private void actualitzarModel(){
         buidarModel();
