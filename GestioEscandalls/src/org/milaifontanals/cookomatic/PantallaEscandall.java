@@ -45,6 +45,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -125,8 +126,8 @@ public class PantallaEscandall extends JDialog {
             lblPlatCodi.setText(plat.getCodi() + "");
             lblPlatNom.setText(plat.getNom());
             txtPlatDesc.setText(plat.getDescripcioMD());
-            lblPlatPreu.setText(plat.getPreu() + "€");
-            lblPlatCategoria.setText(plat.getCategoria().getNom());
+            lblPlatPreu.setText("Preu: " + plat.getPreu() + "€");
+            lblPlatCategoria.setText("Categoria: " + plat.getCategoria().getNom());
             lblPlatDisponible.setText(plat.isDisponible()? "Disponible" : "No disponible");
 
             // copiem escandall
@@ -186,6 +187,7 @@ public class PantallaEscandall extends JDialog {
         lblPlatPreu = new JLabel();
         lblPlatPreu.setFont(new Font("Serif", Font.PLAIN, 14));
         lblPlatCategoria = new JLabel();
+        lblPlatCategoria.setFont(new Font("Serif", Font.PLAIN, 14));
         lblPlatDisponible = new JLabel();
         lblPlatDisponible.setFont(new Font("Serif", Font.PLAIN, 14));
 
@@ -197,6 +199,7 @@ public class PantallaEscandall extends JDialog {
         panellNom.add(lblPlatNom);
         panellNom.add(txtPlatDesc);
         panellPreu.add(lblPlatPreu);
+        panellPreu.add(lblPlatCategoria);
         panellPreu.add(lblPlatDisponible);
 
         panellNom.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -270,14 +273,26 @@ public class PantallaEscandall extends JDialog {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         taulaEscandall.setDefaultRenderer(String.class, centerRenderer);
-
+        
         JScrollPane scroll = new JScrollPane(taulaEscandall, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setPreferredSize(new Dimension(400, 200));
 
         Border marc = BorderFactory.createLineBorder(java.awt.Color.LIGHT_GRAY, 10);
         scroll.setBorder(marc);
 
-        add(scroll, BorderLayout.CENTER);
+        // Títol per a la taula d'escandalls
+        JPanel panellTaula = new JPanel();
+        panellTaula.setLayout(new BoxLayout(panellTaula, BoxLayout.PAGE_AXIS));
+
+        JLabel lblTaula = new JLabel("Escandall");
+        lblTaula.setFont(new Font(Font.SERIF, Font.BOLD, 20));
+        lblTaula.setAlignmentX(SwingConstants.CENTER);
+        
+        panellTaula.add(lblTaula);
+        panellTaula.add(scroll);
+        
+//        add(scroll, BorderLayout.CENTER);
+        add(panellTaula, BorderLayout.CENTER);
     }
 
     

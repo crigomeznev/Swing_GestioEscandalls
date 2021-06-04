@@ -83,7 +83,7 @@ public class PantallaPlats {
     // Taula plats
     private JScrollPane scrollTaula;
     private JTable taulaPlats;
-    private String[] titolsColumnes = new String[]{"NOM", "PREU"};
+    private String[] titolsColumnes = new String[]{"NOM DEL PLAT", "PREU"};
     private DefaultTableModel modelPlats = new DefaultTableModel();
 
     

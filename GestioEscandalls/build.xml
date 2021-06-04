@@ -10,6 +10,10 @@
 <project name="GestioEscandalls" default="default" basedir=".">
     <description>Builds, tests, and runs the project GestioEscandalls.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <target name="-post-jar">
+        <copy file="connexio.properties" todir="${dist.dir}" />
+    </target>
     <!--
 
     There exist several targets which are by default empty and which can be 

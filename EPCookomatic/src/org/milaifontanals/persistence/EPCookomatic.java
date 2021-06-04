@@ -8,6 +8,7 @@ package org.milaifontanals.persistence;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -76,9 +77,7 @@ public class EPCookomatic {
         try {
             HashMap<String, String> propietats = new HashMap(props);
             emf = Persistence.createEntityManagerFactory(up, propietats);
-//            System.out.println("EntityManagerFactory creada");
             em = emf.createEntityManager();
-//            System.out.println("EntityManager creat");
         } catch (Exception ex) {
             if (emf != null) {
                 emf.close();
@@ -87,6 +86,7 @@ public class EPCookomatic {
         }
     }
 
+    
     /**
      * Intenta recuperar l'empleat amb codi indicat per paràmetre.
      *
@@ -106,12 +106,12 @@ public class EPCookomatic {
         }
 
         return categories;
-//        return em.find(Empleat.class, (short) codi);
     }
 
+    
     public List<Plat> getPlats() {
         List<Plat> plats = new ArrayList<>();
-
+        
         Query q = em.createNamedQuery("Plats");
 
         plats = (List<Plat>) q.getResultList();
@@ -120,9 +120,9 @@ public class EPCookomatic {
         }
 
         return plats;
-//        return em.find(Empleat.class, (short) codi);
     }
 
+    
     public List<Plat> getPlatsFiltrats(Categoria c, Boolean disponible) {
         List<Plat> plats = new ArrayList<>();
         Query q = null;
@@ -134,12 +134,6 @@ public class EPCookomatic {
             q.setParameter("categoria", c);
         }
 
-        /*        
-        if (disponible==null)
-            q.setParameter("disponible", "disponible");
-        else
-            q.setParameter("disponible", disponible);
-         */
         List<Boolean> disponibilitats = new ArrayList<>();
 
         disponibilitats.add(true);
@@ -153,23 +147,15 @@ public class EPCookomatic {
         }
         q.setParameter("disponible", disponibilitats);
 
-        // Opció: Disponibilitat: TOTES
-//        if (disponible==null){
-//            q = em.createNamedQuery("PlatsPerCategoria");
-//        } else {
-//            q = em.createNamedQuery("PlatsFiltratsCategoriaDisponibilitat");
-//            q.setParameter("disponible", disponible);
-//        }
-//        q.setParameter("categoria", c);
         plats = (List<Plat>) q.getResultList();
         for (Plat p : plats) {
             System.out.println("plats: " + p);
         }
 
         return plats;
-//        return em.find(Empleat.class, (short) codi);
     }
 
+    
     public List<Plat> getPlatsPerDisponibilitat(boolean disponible) {
         List<Plat> plats = new ArrayList<>();
 
@@ -182,13 +168,14 @@ public class EPCookomatic {
         }
 
         return plats;
-//        return em.find(Empleat.class, (short) codi);
     }
 
+    
     public Plat getPlatPerCodi(long codi) {
         return (Plat)em.find(Plat.class, codi);
     }
 
+    
     public List<LiniaEscandall> getEscandallPerPlat(Plat plat) {
         List<LiniaEscandall> escandall = new ArrayList<>();
 
@@ -198,11 +185,6 @@ public class EPCookomatic {
         List<Object[]> res = q.getResultList();
 
         for (Object[] obj : res) {
-//NUM
-//QUANTITAT
-//PLAT
-//INGREDIENT
-//UNITAT
             int num = (int) obj[0];
             int quantitat = (int) obj[1];
 
@@ -219,45 +201,27 @@ public class EPCookomatic {
         }
 
         return escandall;
-//        return em.find(Empleat.class, (short) codi);
     }
 
+    
     public Ingredient getIngredientPerCodi(long codi) {
-//        Ingredient i = null;
-//
-//        Query q = em.createNamedQuery("IngredientPerCodi");
-//        q.setParameter("codi", codi);
-//
-//        i = (Ingredient)q.getSingleResult();
-//
-//        return i;
         return em.find(Ingredient.class, codi);
     }
 
+    
     public Unitat getUnitatPerCodi(long codi) {
-//        Ingredient i = null;
-//
-//        Query q = em.createNamedQuery("IngredientPerCodi");
-//        q.setParameter("codi", codi);
-//
-//        i = (Ingredient)q.getSingleResult();
-//
-//        return i;
         return em.find(Unitat.class, codi);
     }
 
+    
     public List<Ingredient> getIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
 
         Query q = em.createNamedQuery("Ingredients");
 
         ingredients = (List<Ingredient>) q.getResultList();
-//        for (Ingredient c : ingredients) {
-//            System.out.println("categoria: " + c);
-//        }
 
         return ingredients;
-//        return em.find(Empleat.class, (short) codi);
     }
 
 
@@ -267,28 +231,16 @@ public class EPCookomatic {
         Query q = em.createNamedQuery("Unitats");
 
         unitats = (List<Unitat>) q.getResultList();
-//        for (Ingredient c : ingredients) {
-//            System.out.println("categoria: " + c);
-//        }
 
         return unitats;
-//        return em.find(Empleat.class, (short) codi);
     }
 
 
     public void inserirLiniaEscandall(LiniaEscandall linia, Plat plat) {
-//        for (Iterator i = plat.getEscandall().iterator(); i.hasNext();) {
-//            LiniaEscandall le = (LiniaEscandall)i.next();
-//            if (le.equals(linia)){
-//                i.();
-//                break; // nomes eliminem 1 linia i marxem
-//            }
-//        }
         plat.addLiniaEscandall(linia);
         em.merge(plat);
         em.persist(plat);
         
-//        em.remove(linia);
         commit();        
     }
 
@@ -304,7 +256,6 @@ public class EPCookomatic {
         em.merge(plat);
         em.persist(plat);
         
-//        em.remove(linia);
         commit();
     }
     
